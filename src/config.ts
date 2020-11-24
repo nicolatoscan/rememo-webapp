@@ -1,3 +1,3 @@
 export default {
-    API_ENDPOINT: 'http://localhost:3000/api/v1'
+    API_ENDPOINT: `${process.env.VUE_APP_API_HOST}/api/v1`
 }
