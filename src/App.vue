@@ -1,10 +1,15 @@
 <template>
-    <Header />
-    <router-view />
+    <div class="header-wrapper">
+        <Header />
+    </div>
+    <div class="router-wrapper">
+        <router-view />
+    </div>
 </template>
 
 <style lang="scss">
-@import "./style/_variables.sass";
+@import "./style/_variables.scss";
+@import "./style/global.scss";
 
 body {
     margin: 0;
@@ -16,6 +21,14 @@ body {
     -moz-osx-font-smoothing: grayscale;
     color: #2c3e50;
     border: 0;
+    height: 100vh;
+    width: 100vw;
+    display: grid;
+    grid-template-columns: auto;
+    grid-template-rows: 50px auto;
+}
+#router-view {
+    color: blue !important;
 }
 </style>
 

@@ -4,6 +4,7 @@
         <nav>
             <router-link to="/">Home</router-link>
             <router-link to="/about">About</router-link>
+            <router-link to="/login">Login</router-link>
         </nav>
     </header>
 </template>
@@ -18,12 +19,13 @@ export default defineComponent({
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-@import "../style/_variables.sass";
+@import "../style/_variables.scss";
 
 header {
     background-color: $main-color;
     text-align: left;
     display: flex;
+    height: 100%;
     > h1 {
         margin: 0.2em 2em;
         display: inline-block;
