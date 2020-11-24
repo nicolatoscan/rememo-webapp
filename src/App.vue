@@ -27,8 +27,8 @@ body {
     grid-template-columns: auto;
     grid-template-rows: 50px auto;
 }
-#router-view {
-    color: blue !important;
+.router-wrapper {
+    overflow: hidden;
 }
 </style>
 

@@ -68,7 +68,7 @@
 import { defineComponent } from 'vue';
 import HelloWorld from '@/components/HelloWorld.vue';
 import * as Models from '@/models';
-import * as authServices from '@/services/auth.service';
+import * as authServices from '@/services/auth.services';
 import router from '@/router';
 
 export default defineComponent({

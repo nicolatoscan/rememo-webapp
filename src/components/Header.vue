@@ -3,7 +3,7 @@
         <h1>Rememo</h1>
         <nav>
             <router-link to="/">Home</router-link>
-            <router-link to="/about">About</router-link>
+            <router-link to="/collections">Collections</router-link>
             <router-link to="/login">Login</router-link>
         </nav>
     </header>

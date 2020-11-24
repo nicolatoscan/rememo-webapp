@@ -1,5 +1,3 @@
-import CONFIG from '@/config'
-import axios from 'axios';
 import * as apiHelpers from '@/helpers/api.helper';
 import * as authHelper from '@/helpers/auth.helper'
 import * as Models from '@/models';
