@@ -96,20 +96,19 @@ export default defineComponent({
         login: async function () {
             try {
                 const res = await authServices.login(this.$data.loginQuery);
+                router.push('/');
             } catch (ex) {
                 this.$data.error = ex.info;
             }
-            console.log('hey')
-            router.push('/');
         },
         signup: async function () {
             console.log(this.$data.sigupQuery);
             try {
                 const res = await authServices.signup(this.$data.sigupQuery);
+                router.push('/');
             } catch (ex) {
                 this.$data.error = ex.info;
             }
-            router.push('/');
         }
     }
 });
