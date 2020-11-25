@@ -10,10 +10,10 @@
         <input
             v-model="word.translation"
             type="text"
-            placeholder="Tranlation"
+            placeholder="Translation"
             name="translation"
         />
-        <button v-on:click="sendWord()">+ Insert new Word</button>
+        <button v-on:click="sendWord()">+ Insert New Word</button>
     </div>
 </template>
 

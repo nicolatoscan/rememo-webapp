@@ -15,6 +15,10 @@
                     "
                     v-on:click="updateSelectedCollection(coll._id)"
                 >
+                    <img
+                        src="../assets/icons/delete.svg"
+                        v-on:click.stop="deleteCollection(coll._id)"
+                    />
                     <p class="name">{{ coll.name }}</p>
                     <p class="description">{{ coll.description }}</p>
                 </div>
@@ -32,6 +36,10 @@
                     v-for="word in selectedCollection.words"
                     :key="word._id"
                 >
+                    <img
+                        src="../assets/icons/delete.svg"
+                        v-on:click.stop="deleteWord(selectedCollection._id, word._id)"
+                    />
                     <p class="description">{{ word.original }}</p>
                     <p class="description">{{ word.translation }}</p>
                 </div>
@@ -79,6 +87,30 @@ export default defineComponent({
                     console.log(err.info);
                 }
             }
+        },
+        deleteCollection: async function (collId: string) {
+            if (!collId)
+                return;
+            if (this.$data.selectedCollectionId === collId) {
+                this.$data.selectedCollectionId = null;
+                this.$data.selectedCollection = null;
+            }
+            try {
+                await collectionServices.deleteCollection(collId);
+            } catch (err) {
+                console.log(err.info);
+            }
+            this.updateCollections();
+        },
+        deleteWord: async function (collId: string, wordId: string) {
+            if (!collId || ! wordId)
+                return;
+            try {
+                await collectionServices.deleteWord(collId, wordId);
+            } catch (err) {
+                console.log(err.info);
+            }
+            this.updateSelectedCollection(collId);
         }
     }
 });
@@ -115,6 +147,17 @@ export default defineComponent({
                     &.name {
                         font-weight: bold;
                         margin-bottom: 5px;
+                    }
+                }
+
+                img {
+                    width: 25px;
+                    float: right;
+                    padding: 0.2em;
+                    cursor: pointer;
+                    border-radius: 3px;
+                    &:hover {
+                        background-color: #444;
                     }
                 }
             }
