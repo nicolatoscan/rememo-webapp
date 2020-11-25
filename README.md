@@ -1,3 +1,5 @@
+[![Netlify Status](https://api.netlify.com/api/v1/badges/7a5e41ee-fd64-4bef-9763-2099a7f22df6/deploy-status)](https://app.netlify.com/sites/affectionate-poitras-963187/deploys)
+
 # Rememo WebApp
 Project: Rememo<br>
 Group ID: #13<br>
@@ -43,7 +45,7 @@ Now you can ompiles and hot-reloads for development
 npm run serve
 ```
 
-Or compiles and minifies for production
+Or ccompiles and minifies for production
 ```
 npm run build
 ```
