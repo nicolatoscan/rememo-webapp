@@ -40,9 +40,6 @@ export default defineComponent({
             saving: false,
         }
     },
-    created: function () {
-        console.log(this.$props.collectionId)
-    },
     methods: {
         sendWord: async function () {
             if (this.$props.collectionId) {

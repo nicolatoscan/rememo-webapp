@@ -100,7 +100,6 @@ export default defineComponent({
             }
         },
         signup: async function () {
-            console.log(this.$data.sigupQuery);
             try {
                 const res = await authServices.signup(this.$data.sigupQuery);
                 router.push('/');

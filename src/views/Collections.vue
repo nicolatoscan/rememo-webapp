@@ -72,7 +72,6 @@ export default defineComponent({
         },
         updateSelectedCollection: async function (collId: string) {
             if (collId) {
-                console.log(collId)
                 this.$data.selectedCollectionId = collId;
                 try {
                     this.$data.selectedCollection = await collectionServices.getCollectionById(this.$data.selectedCollectionId);
