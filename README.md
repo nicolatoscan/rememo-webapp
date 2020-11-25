@@ -1,5 +1,7 @@
 [![Netlify Status](https://api.netlify.com/api/v1/badges/7a5e41ee-fd64-4bef-9763-2099a7f22df6/deploy-status)](https://app.netlify.com/sites/affectionate-poitras-963187/deploys)
-
+[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
+[![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/nicolatoscan/rememo-webapp/blob/master/LICENSE)
+![ts](https://badgen.net/badge/Built%20With/TypeScript/blue)
 # Rememo WebApp
 Project: Rememo<br>
 Group ID: #13<br>
