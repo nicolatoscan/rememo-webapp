@@ -1,24 +1,49 @@
-# rememo-webapp
+# Rememo WebApp
+Project: Rememo<br>
+Group ID: #13<br>
+Alessio Gandelli - [alessiogandelli](https://github.com/alessiogandelli)<br>
+Mattia Salvador - [MattiaSalvador201506](https://github.com/MattiaSalvador201506)<br>
+Nicola Toscan - [nicolatoscan](https://github.com/nicolatoscan)<br>
+Taras Rashkevych - [TarasRashkevych99](https://github.com/TarasRashkevych99)
 
-## Project setup
+## Overview
+This project consist's of a [vue.js](https://vuejs.org/) Web Application written in Typescript.
+
+## API
+The api used bu this web application are being developed at https://github.com/nicolatoscan/rememo-api <br>
+You can find there a README and wiki on how it's being developed.
+
+## Live demo
+A live demo is avaiable at https://rememo.nicolatoscan.dev/
+
+## How to demo on your machine
+Make sure you have installed [Node.js](https://nodejs.org/en/).<br>
+This project was developed with Node v15 and tested on Ubuntu and Windows.
+
+Clone the repository on your machine.
+```bash
+git clone https://github.com/nicolatoscan/rememo-api.git
 ```
+
+Inside the `rememo-webapp` folder install the necessary dependencies
+```bash
 npm install
 ```
 
-### Compiles and hot-reloads for development
+Create a file called `.env` using the `.env.example` template file where you can define the API endpoint.<br>
+```
+VUE_APP_API_HOST=<your-api-endpoint>
+```
+You can use a public avaiable endpoint at https://rememo-api.herokuapp.com/<br>
+Or you can compile and run it on you machine followig the istruction at https://github.com/nicolatoscan/rememo-api
+
+
+Now you can ompiles and hot-reloads for development
 ```
 npm run serve
 ```
 
-### Compiles and minifies for production
+Or compiles and minifies for production
 ```
 npm run build
 ```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
