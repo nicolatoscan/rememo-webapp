@@ -7,8 +7,10 @@
                     class="collection-item item"
                     v-for="coll in collections"
                     :key="coll._id"
-                    v-bind:class="coll._id === selectedCollection?._id ? 'active' : ''"
-                    v-on:click="selectedCollection = coll"
+                    v-bind:class="
+                        coll._id === selectedCollectionId ? 'active' : ''
+                    "
+                    v-on:click="updateSelectedCollection(coll._id)"
                 >
                     <p class="name">{{ coll.name }}</p>
                     <p class="description">{{ coll.description }}</p>
@@ -16,8 +18,13 @@
             </div>
         </div>
         <div class="my-words section" v-if="selectedCollection !== null">
-            <h1>{{selectedCollection.name}}</h1>
+            <h1>{{ selectedCollection.name }}</h1>
             <div class="collection-list items-list">
+                <InsertWord
+                    v-bind:collectionId="selectedCollection._id"
+                    msg="ciaone"
+                    v-on:wordCreated="updateSelectedCollection($event)"
+                />
                 <div
                     class="collection-item item"
                     v-for="word in selectedCollection.words"
@@ -33,6 +40,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import InsertWord from '@/components/InsertWord.vue';
 import * as Models from '@/models';
 import * as collectionServices from '@/services/collection.services';
 
@@ -41,18 +49,31 @@ export default defineComponent({
     data: () => {
         return {
             collections: [] as Models.Collection[],
+            selectedCollectionId: null as string | null,
             selectedCollection: null as Models.Collection | null,
         }
     },
     components: {
-    },
-    methods: {
+        InsertWord
     },
     created: async function () {
         try {
             this.$data.collections = await collectionServices.getMyCollections();
         } catch (err) {
             console.log(err.info);
+        }
+    },
+    methods: {
+        updateSelectedCollection: async function (collId: string) {
+            if (collId) {
+                console.log(collId)
+                this.$data.selectedCollectionId = collId;
+                try {
+                    this.$data.selectedCollection = await collectionServices.getCollectionById(this.$data.selectedCollectionId);
+                } catch (err) {
+                    console.log(err.info);
+                }
+            }
         }
     }
 });
@@ -81,7 +102,7 @@ export default defineComponent({
 
                 &:hover,
                 &.active {
-                    background-color: #eee;
+                    background-color: #333;
                 }
 
                 p {
