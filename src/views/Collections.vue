@@ -150,10 +150,14 @@ export default defineComponent({
     }
 
     .section {
+        max-width: 600px;
+        width: 90%;
+        margin: auto inherit;
         padding: 0 1em;
         overflow: auto;
+        justify-self: center;
         .items-list {
-            margin: 1em;
+            margin: 1em 0;
             .item {
                 border-bottom: 1px solid black;
                 padding: 1em;
