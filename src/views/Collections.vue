@@ -19,6 +19,10 @@
                         src="../assets/icons/delete.svg"
                         v-on:click.stop="deleteCollection(coll._id)"
                     />
+                    <img
+                        src="../assets/icons/share.svg"
+                        v-on:click.stop="shareCollection(coll._id)"
+                    />
                     <p class="name">{{ coll.name }}</p>
                     <p class="description">{{ coll.description }}</p>
                 </div>
@@ -54,6 +58,7 @@ import InsertWord from '@/components/InsertWord.vue';
 import InsertCollection from '@/components/InsertCollection.vue';
 import * as Models from '@/models';
 import * as collectionServices from '@/services/collection.services';
+import * as shareServices from '@/services/share.services';
 
 export default defineComponent({
     name: 'Home',
@@ -103,7 +108,7 @@ export default defineComponent({
             this.updateCollections();
         },
         deleteWord: async function (collId: string, wordId: string) {
-            if (!collId || ! wordId)
+            if (!collId || !wordId)
                 return;
             try {
                 await collectionServices.deleteWord(collId, wordId);
@@ -111,6 +116,19 @@ export default defineComponent({
                 console.log(err.info);
             }
             this.updateSelectedCollection(collId);
+        },
+        shareCollection: async function (collId: string) {
+            if (!collId)
+                return;
+            try {
+                const urlParts = (await shareServices.shareCollection(collId)).split('/');
+                const id = urlParts[urlParts.length - 1];
+                const importUrl = `${window.location.origin}/#/import?collectionId=${collId}`
+                navigator.clipboard.writeText(importUrl);
+                alert(`Collection shared, url copied in the clipboard or use:\n${importUrl}`)
+            } catch (err) {
+                console.log(err.info);
+            }
         }
     }
 });
