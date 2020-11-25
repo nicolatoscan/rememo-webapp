@@ -1,12 +1,11 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
-import Home from '@/views/Home.vue';
+import Collections from '@/views/Collections.vue';
 import * as authHelpers from '@/helpers/auth.helper';
 
 const routes: Array<RouteRecordRaw> = [
     {
         path: '/',
-        name: 'Home',
-        component: Home
+        redirect: '/collections'
     },
     {
         path: '/collections',

@@ -2,10 +2,11 @@
     <div class="collection-page">
         <div class="my-collections section">
             <h1>My collections</h1>
+            <InsertCollection
+                class="form"
+                v-on:collectionCreated="updateCollections($event)"
+            />
             <div class="collection-list items-list">
-                <InsertCollection
-                    v-on:collectionCreated="updateCollections($event)"
-                />
                 <div
                     class="collection-item item"
                     v-for="coll in collections"
@@ -30,11 +31,12 @@
         </div>
         <div class="my-words section" v-if="selectedCollection !== null">
             <h1>{{ selectedCollection.name }}</h1>
+            <InsertWord
+                class="form"
+                v-bind:collectionId="selectedCollection._id"
+                v-on:wordCreated="updateSelectedCollection($event)"
+            />
             <div class="collection-list items-list">
-                <InsertWord
-                    v-bind:collectionId="selectedCollection._id"
-                    v-on:wordCreated="updateSelectedCollection($event)"
-                />
                 <div
                     class="collection-item item"
                     v-for="word in selectedCollection.words"
@@ -42,7 +44,9 @@
                 >
                     <img
                         src="../assets/icons/delete.svg"
-                        v-on:click.stop="deleteWord(selectedCollection._id, word._id)"
+                        v-on:click.stop="
+                            deleteWord(selectedCollection._id, word._id)
+                        "
                     />
                     <p class="description">{{ word.original }}</p>
                     <p class="description">{{ word.translation }}</p>
@@ -146,6 +150,7 @@ export default defineComponent({
     }
 
     .section {
+        padding: 0 1em;
         overflow: auto;
         .items-list {
             margin: 1em;
@@ -171,11 +176,12 @@ export default defineComponent({
                 img {
                     width: 25px;
                     float: right;
-                    padding: 0.2em;
+                    padding: 0.4em;
                     cursor: pointer;
                     border-radius: 3px;
+                    filter: invert(1);
                     &:hover {
-                        background-color: #444;
+                        background-color: #ddd;
                     }
                 }
             }

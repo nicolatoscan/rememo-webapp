@@ -1,11 +1,21 @@
 <template>
     <div class="auth-page">
-        <div class="auth-form">
+        <div class="auth-form form">
             <div class="login-signup-selector">
-                <button v-on:click="register = false">Login</button>
-                <button v-on:click="register = true">Signup</button>
+                <p
+                    v-on:click="register = false"
+                    v-bind:class="register ? '' : 'active'"
+                >
+                    Login
+                </p>
+                <p
+                    v-on:click="register = true"
+                    v-bind:class="register ? 'active' : ''"
+                >
+                    Signup
+                </p>
             </div>
-            <p>{{ error }}</p>
+            <p class="error-message" v-if="error !== ''">{{ error }}</p>
             <div class="login-section auth-section" v-if="!register">
                 <label for="username-login-input">Username</label>
                 <input
@@ -26,7 +36,7 @@
             </div>
 
             <div class="register-section auth-section" v-if="register">
-                <label for="displayname-register-input">Username</label>
+                <label for="displayname-register-input">Display Name</label>
                 <input
                     v-model="sigupQuery.displayName"
                     id="displayname-register-input"
@@ -112,30 +122,57 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
+@import "../style/_variables.scss";
+
 .auth-page {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     height: 100%;
     justify-content: center;
 }
 .auth-form {
-    background-color: gainsboro;
     max-width: 100vw;
-    width: 450px;
+    width: 270px;
     display: flex;
     flex-direction: column;
+    padding: 2em;
+    border-radius: 30px;
+    margin-top: 10vh;
+
+    p.error-message {
+        margin-bottom: 0;
+        color: red;
+    }
 
     > .login-signup-selector {
         text-align: center;
+        > p {
+            display: inline-block;
+            margin: 0 0.5em;
+            font-size: 1.3em;
+            cursor: pointer;
+            color: #bbb;
+            &.active {
+                color: $main-color;
+            }
+        }
     }
 
     > .auth-section {
-        > * {
+        > label,
+        input {
             display: block;
-            width: 80%;
-            margin: 0.8em auto;
+            width: 100%;
+            margin: auto;
+        }
+        > label {
+            margin-bottom: 2px;
+            margin-top: 1em;
+        }
+        > button {
+            margin: 2em 0 0;
+            width: 100%;
         }
     }
 }
-
 </style>

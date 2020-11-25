@@ -14,7 +14,6 @@
 body {
     margin: 0;
     background-color: #222;
-    color: white;
 }
 
 #app {
