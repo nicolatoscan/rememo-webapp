@@ -3,6 +3,9 @@
         <div class="my-collections section">
             <h1>My collections</h1>
             <div class="collection-list items-list">
+                <InsertCollection
+                    v-on:collectionCreated="updateCollections($event)"
+                />
                 <div
                     class="collection-item item"
                     v-for="coll in collections"
@@ -22,7 +25,6 @@
             <div class="collection-list items-list">
                 <InsertWord
                     v-bind:collectionId="selectedCollection._id"
-                    msg="ciaone"
                     v-on:wordCreated="updateSelectedCollection($event)"
                 />
                 <div
@@ -41,6 +43,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import InsertWord from '@/components/InsertWord.vue';
+import InsertCollection from '@/components/InsertCollection.vue';
 import * as Models from '@/models';
 import * as collectionServices from '@/services/collection.services';
 
@@ -54,16 +57,19 @@ export default defineComponent({
         }
     },
     components: {
-        InsertWord
+        InsertWord, InsertCollection
     },
     created: async function () {
-        try {
-            this.$data.collections = await collectionServices.getMyCollections();
-        } catch (err) {
-            console.log(err.info);
-        }
+        await this.updateCollections();
     },
     methods: {
+        updateCollections: async function () {
+            try {
+                this.$data.collections = await collectionServices.getMyCollections();
+            } catch (err) {
+                console.log(err.info);
+            }
+        },
         updateSelectedCollection: async function (collId: string) {
             if (collId) {
                 console.log(collId)

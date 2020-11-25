@@ -17,6 +17,13 @@ export async function getCollectionById(collectionId: string): Promise<Models.Co
     }
 }
 
+export async function createCollection(collection: Models.Collection): Promise<Models.Id> {
+    try {
+        return (await apiHelpers.post(`/collections`, collection)).data as Models.Id;
+    } catch (err) {
+        throw new Models.ApiError(err.response.status, err.response.data)
+    }
+}
 
 export async function createWord(collectionId: string, word: Models.Word): Promise<Models.Id> {
     try {

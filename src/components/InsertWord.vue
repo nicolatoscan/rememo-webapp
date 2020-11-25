@@ -1,5 +1,5 @@
 <template>
-    <div class="insert-word">
+    <div class="insert-word insert-modal">
         <p>{{ message }}</p>
         <input
             v-model="word.original"
@@ -62,27 +62,3 @@ export default defineComponent({
     },
 });
 </script>
-
-<style scoped lang="scss">
-.insert-word {
-    input {
-        display: block;
-        width: 80%;
-        margin: 1em auto;
-        padding: 0.1em;
-        font-size: 1.1em;
-    }
-    button {
-        display: block;
-        margin: auto;
-        margin-bottom: 1em;
-    }
-    p {
-        display: block;
-        text-align: center;
-    }
-    padding: 0.5em 0;
-    border-radius: 10px;
-    border: 1px solid #444;
-}
-</style>
