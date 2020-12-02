@@ -12,7 +12,6 @@ export function saveToken(token: string): void {
 }
 
 export function getAuthHeader(): { Authorization?: string } {
-    if (token)
-        return { Authorization: getToken() ?? '' };
-    return {};
+    const token = getToken();
+    return token ? { Authorization: token } : { };
 }
