@@ -1,12 +1,13 @@
 <template>
 <div class="collections-selector">
     <div class="collection-list">
+        <p v-if="errorMsg">{{ errorMsg }}</p>
         <ul>
             <li
                 v-for="coll in collections"
                 :key="coll._id"
             >
-                <input :id="coll._id" :value="coll._id" name="collection" type="checkbox" v-model="selectedCollectionsIds" />
+                <input :id="coll._id" :value="coll" name="collection" type="checkbox" v-model="selectedCollections" />
                 <label :for="coll._id">{{ coll.name }}{{ coll._id }}</label>
             </li>
         </ul>
@@ -23,15 +24,15 @@ import * as collectionServices from '@/services/collection.services';
 export default defineComponent({
     name: 'CollectionsSelector',
     props: {
-        confirmButtonText: {
-            type: String,
-            default: 'Confirm'
-        }
+        confirmButtonText: { type: String, default: 'Confirm' },
+        minCollections: { type: Number, default: 0 },
+        minWords: { type: Number, default: 0 },
     },
     data: () => {
         return {
             collections: [] as Models.Collection[],
-            selectedCollectionsIds: [] as string[],
+            selectedCollections: [] as Models.Collection[],
+            errorMsg: ''
         }
     },
     created: async function () {
@@ -43,7 +44,13 @@ export default defineComponent({
     },
     methods: {
         onButtonConfirm: function () {
-            this.$emit('confirm', this.selectedCollectionsIds);
+            const selCollections = this.$data.selectedCollections;
+            if (selCollections.length < this.$props.minCollections)
+                this.$data.errorMsg = 'Not enough collections selected'
+            else if (selCollections.map(c => c.words.length).reduce((a, b) => a + b, 0) < this.$props.minWords)
+                this.$data.errorMsg = 'Not enough words selected'
+            else
+                this.$emit('confirm', selCollections.map(c => c._id));
         }
     }
 });
