@@ -1,10 +1,11 @@
 <template>
 <div class="wrapper form">
-    <p>{{ word }}</p>
+    <p>{{ word.original }}</p>
     <input
         :value="modelValue"
         @input="$emit('update:modelValue', $event.target.value)"
         type="text" />
+    <p v-if="showAnswer">{{ word.translation }}</p>
 </div>
 </template>
 
@@ -15,8 +16,12 @@ import * as Models from '@/models';
 export default defineComponent({
     name: 'AskWord',
     props: {
-        word: String,
-        modelValue: String
+        word: Object,
+        modelValue: String,
+        showAnswer: {
+            type: Boolean,
+            default: false
+        }
     },
     emits: ['update:modelValue'],
 

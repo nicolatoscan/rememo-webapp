@@ -8,12 +8,13 @@
         />
         <div v-if="currentStatus === EStatus.Training" class="training-word">
             <div v-if="currentWord">
-                <AskWord :word="currentWord.original" v-model="answer"/>
+                <AskWord :word="currentWord" :showAnswer="showingAnswer" v-model="answer" />
+                <p v-if="showingAnswer">{{ currentWord.translation }}</p>
             </div>
             <div class="buttons">
                 <button @click="closeTraining()">X Close</button>
-                <button @click="check()">Skip >></button>
-                <button @click="check()">Check</button>
+                <button @click="showAnswer()">Show answer</button>
+                <button @click="check()" :class="resultCSSClassColor">Check</button>
             </div>
         </div>
     </div>
@@ -38,8 +39,11 @@ export default defineComponent({
             EStatus: EStatus,
             currentStatus: EStatus.SelectingCollection,
             selectedCollectionsIds: [] as string[],
-            currentWord: null as Models.Word | null,
-            answer: ''
+            currentWord: null as Models.FullWord | null,
+            answer: '',
+            resultCSSClassColor: '',
+            firstTry: false,
+            showingAnswer: false
         }
     },
     components: {
@@ -57,29 +61,35 @@ export default defineComponent({
             this.$data.currentStatus = EStatus.SelectingCollection;
             this.$data.selectedCollectionsIds = [];
         },
-        check: async function () {
-            console.log(this.$data.answer)
-            const word = this.$data.currentWord
-            if (word) {
-                if (word.translation.toLowerCase().trim() == this.$data.answer.toLowerCase().trim()) {
-                    trainServices.saveWord(word._id!, word._id!, true);
-                    console.log('OK');
-                } else {
-                    trainServices.saveWord(word._id!, word._id!, false);
-                    console.log('ERROR');
-                }
-                this.getNextWord();
-            }
-        },
-        skip: async function skip() {
+        check: function () {
             const word = this.$data.currentWord;
             if (word) {
-                trainServices.saveWord(word._id!, word._id!, false);
-                this.getNextWord();
+                const result = word.translation.toLowerCase().trim() == this.$data.answer.toLowerCase().trim();
+                this.$data.resultCSSClassColor = result ? 'correct' : 'error';
+                if (this.$data.firstTry) {
+                    trainServices.saveWord(word.collectionId, word._id!, result);
+                    this.$data.firstTry = false;
+                }
+                if (result) {
+                    this.getNextWord();
+                }
+                setTimeout(() => { this.$data.resultCSSClassColor = '' }, 600);
+            }
+        },
+        showAnswer: function () {
+            const word = this.$data.currentWord;
+            if (word) {
+                if (this.$data.firstTry) {
+                    trainServices.saveWord(word.collectionId, word._id!, false);
+                    this.$data.firstTry = false;
+                }
+                this.$data.showingAnswer = true;
             }
         },
         getNextWord: async function () {
             this.$data.currentWord = await trainServices.nextWord(this.$data.selectedCollectionsIds);
+            this.$data.firstTry = true;
+            this.$data.showingAnswer = false;
             this.$data.answer = '';
         }
     }
