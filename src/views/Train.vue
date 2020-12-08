@@ -9,7 +9,11 @@
         />
         <div v-if="currentStatus === EStatus.Training" class="training-word">
             Current word
-
+            <div v-if="currentWord">
+                <p>{{ currentWord.original }}</p>
+                <input v-model="answer" type="text" />
+            </div>
+            <button v-on:click="check()">> Check</button>
             <button v-on:click="closeTraining()">X Close</button>
         </div>
     </div>
@@ -18,6 +22,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import CollectionsSelector from '@/components/CollectionsSelector.vue';
+import * as trainServices from '@/services/study/train.services';
 import * as Models from '@/models';
 
 enum EStatus {
@@ -31,7 +36,9 @@ export default defineComponent({
         return {
             EStatus: EStatus,
             currentStatus: EStatus.SelectingCollection,
-            selectedCollectionsIds: [] as string[]
+            selectedCollectionsIds: [] as string[],
+            currentWord: null as Models.Word | null,
+            answer: ''
         }
     },
     components: {
@@ -40,15 +47,31 @@ export default defineComponent({
     created: async function () {
     },
     methods: {
-        collectionsSelected: function (idSelected: string[]) {
-            console.log(idSelected);
+        collectionsSelected: function (idsSelected: string[]) {
             this.$data.currentStatus = EStatus.Training;
-            this.$data.selectedCollectionsIds = idSelected;
+            this.$data.selectedCollectionsIds = idsSelected;
+            this.getNextWord();
         },
         closeTraining: function () {
             this.$data.currentStatus = EStatus.SelectingCollection;
             this.$data.selectedCollectionsIds = [];
-
+        },
+        check: async function () {
+            const word = this.$data.currentWord
+            if (word) {
+                if (word.translation.toLowerCase().trim() == this.$data.answer.toLowerCase().trim()) {
+                    trainServices.saveWord(word._id!, word._id!, true);
+                    console.log('OK');
+                } else {
+                    trainServices.saveWord(word._id!, word._id!, false);
+                    console.log('ERROR');
+                }
+                this.getNextWord();
+                this.$data.answer = '';
+            }
+        },
+        getNextWord: async function () {
+            this.$data.currentWord = await trainServices.nextWord(this.$data.selectedCollectionsIds);
         }
     }
 });
