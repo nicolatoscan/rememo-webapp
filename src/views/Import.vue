@@ -8,7 +8,7 @@
                 {{ word.original }} - {{ word.translation }}
             </li>
         </ul>
-        <button v-on:click="ciao(collection._id)">Import It</button>
+        <button @click="ciao(collection._id)">Import It</button>
     </div>
 </template>
 
