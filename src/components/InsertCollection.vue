@@ -13,7 +13,7 @@
             placeholder="Description"
             name="description"
         />
-        <button v-on:click="createCollection()">+ Insert New Collection</button>
+        <button @click="createCollection()">+ Insert New Collection</button>
     </div>
 </template>
 

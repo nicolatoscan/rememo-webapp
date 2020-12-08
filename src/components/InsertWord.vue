@@ -13,7 +13,7 @@
             placeholder="Translation"
             name="translation"
         />
-        <button v-on:click="sendWord()">+ Insert New Word</button>
+        <button @click="sendWord()">+ Insert New Word</button>
     </div>
 </template>
 

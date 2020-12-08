@@ -4,25 +4,23 @@
             <h1>My collections</h1>
             <InsertCollection
                 class="form"
-                v-on:collectionCreated="updateCollections($event)"
+                @collectionCreated="updateCollections($event)"
             />
             <div class="collection-list items-list">
                 <div
                     class="collection-item item"
                     v-for="coll in collections"
                     :key="coll._id"
-                    v-bind:class="
-                        coll._id === selectedCollectionId ? 'active' : ''
-                    "
-                    v-on:click="updateSelectedCollection(coll._id)"
+                    :class="coll._id === selectedCollectionId ? 'active' : ''"
+                    @click="updateSelectedCollection(coll._id)"
                 >
                     <img
                         src="../assets/icons/delete.svg"
-                        v-on:click.stop="deleteCollection(coll._id)"
+                        @click.stop="deleteCollection(coll._id)"
                     />
                     <img
                         src="../assets/icons/share.svg"
-                        v-on:click.stop="shareCollection(coll._id)"
+                        @click.stop="shareCollection(coll._id)"
                     />
                     <p class="name">{{ coll.name }}</p>
                     <p class="description">{{ coll.description }}</p>
@@ -33,8 +31,8 @@
             <h1>{{ selectedCollection.name }}</h1>
             <InsertWord
                 class="form"
-                v-bind:collectionId="selectedCollection._id"
-                v-on:wordCreated="updateSelectedCollection($event)"
+                :collectionId="selectedCollection._id"
+                @wordCreated="updateSelectedCollection($event)"
             />
             <div class="collection-list items-list">
                 <div
@@ -44,7 +42,7 @@
                 >
                     <img
                         src="../assets/icons/delete.svg"
-                        v-on:click.stop="
+                        @click.stop="
                             deleteWord(selectedCollection._id, word._id)
                         "
                     />

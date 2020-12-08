@@ -3,14 +3,14 @@
         <div class="auth-form form">
             <div class="login-signup-selector">
                 <p
-                    v-on:click="register = false"
-                    v-bind:class="register ? '' : 'active'"
+                    @click="register = false"
+                    :class="register ? '' : 'active'"
                 >
                     Login
                 </p>
                 <p
-                    v-on:click="register = true"
-                    v-bind:class="register ? 'active' : ''"
+                    @click="register = true"
+                    :class="register ? 'active' : ''"
                 >
                     Signup
                 </p>
@@ -32,7 +32,7 @@
                     type="password"
                     name="password"
                 />
-                <button v-on:click="login()">Log In</button>
+                <button @click="login()">Log In</button>
             </div>
 
             <div class="register-section auth-section" v-if="register">
@@ -68,7 +68,7 @@
                     name="password"
                 />
 
-                <button v-on:click="signup()">Register</button>
+                <button @click="signup()">Register</button>
             </div>
         </div>
     </div>
