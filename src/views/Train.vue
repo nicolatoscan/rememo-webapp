@@ -4,16 +4,16 @@
             v-if="currentStatus === EStatus.SelectingCollection"
             confirmButtonText="Next"
             :minWords="3"
-            v-on:confirm="collectionsSelected($event)"
+            @confirm="collectionsSelected($event)"
         />
         <div v-if="currentStatus === EStatus.Training" class="training-word">
             <div v-if="currentWord">
                 <AskWord :word="currentWord.original" v-model="answer"/>
             </div>
             <div class="buttons">
-                <button v-on:click="closeTraining()">X Close</button>
-                <button v-on:click="check()">Skip >></button>
-                <button v-on:click="check()">Check</button>
+                <button @click="closeTraining()">X Close</button>
+                <button @click="check()">Skip >></button>
+                <button @click="check()">Check</button>
             </div>
         </div>
     </div>

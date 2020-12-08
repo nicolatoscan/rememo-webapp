@@ -4,13 +4,13 @@
             v-if="currentStatus === EStatus.SelectingCollection"
             confirmButtonText="Next"
             :minWords="3"
-            v-on:confirm="collectionsSelected($event)"
+            @confirm="collectionsSelected($event)"
         />
         <div v-if="currentStatus === EStatus.SelectingLenght" class="lenght-selector form">
             <label for="lenghtTestInput">Test lenght</label>
             <input id="lenghtTestInput" type="number" min="0" max="100" v-model="testLenght" />
             <div class="buttons">
-                <button v-on:click="startTest()">Start Test</button>
+                <button @click="startTest()">Start Test</button>
             </div>
         </div>
         <div v-if="currentStatus === EStatus.Testing && test" class="training-word">
@@ -23,8 +23,8 @@
                 />
             </div>
             <div class="buttons">
-                <button v-on:click="exitTest()">X Close</button>
-                <button v-on:click="check()">Check</button>
+                <button @click="exitTest()">X Close</button>
+                <button @click="check()">Check</button>
             </div>
         </div>
     </div>

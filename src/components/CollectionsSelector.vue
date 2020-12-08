@@ -14,7 +14,7 @@
         </ul>
     </div>
     <div class="buttons">
-        <button v-on:click="onButtonConfirm()">{{ confirmButtonText }}</button>
+        <button @click="onButtonConfirm()">{{ confirmButtonText }}</button>
     </div>
 </div>
 </template>
