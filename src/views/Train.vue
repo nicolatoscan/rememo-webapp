@@ -8,8 +8,12 @@
         />
         <div v-if="currentStatus === EStatus.Training" class="training-word">
             <div v-if="currentWord">
-                <AskWord :word="currentWord" :showAnswer="showingAnswer" v-model="answer" />
-                <p v-if="showingAnswer">{{ currentWord.translation }}</p>
+                <AskWord
+                    :word="currentWord.original"
+                    :answer="currentWord.translation"
+                    :showAnswer="showingAnswer"
+                    v-model="answer"
+                />
             </div>
             <div class="buttons">
                 <button @click="closeTraining()">X Close</button>
