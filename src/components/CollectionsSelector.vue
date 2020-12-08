@@ -1,18 +1,21 @@
 <template>
-<div class="collections-selector">
+<div class="collections-selector form">
+    <h2>Select collections</h2>
     <div class="collection-list">
-        <p v-if="errorMsg">{{ errorMsg }}</p>
+        <p class="error-message" v-if="errorMsg">{{ errorMsg }}</p>
         <ul>
             <li
                 v-for="coll in collections"
                 :key="coll._id"
             >
                 <input :id="coll._id" :value="coll" name="collection" type="checkbox" v-model="selectedCollections" />
-                <label :for="coll._id">{{ coll.name }}{{ coll._id }}</label>
+                <label :for="coll._id">{{ coll.name }}</label>
             </li>
         </ul>
     </div>
-    <button v-on:click="onButtonConfirm()">{{ confirmButtonText }}</button>
+    <div class="buttons">
+        <button v-on:click="onButtonConfirm()">{{ confirmButtonText }}</button>
+    </div>
 </div>
 </template>
 
@@ -59,4 +62,27 @@ export default defineComponent({
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 @import "../style/_variables.scss";
+.collections-selector {
+    padding: 1em;
+    .buttons {
+        text-align: right;
+    }
+    h2 {
+        text-align: center;
+    }
+    .collection-list {
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 1em auto;
+            max-width: 600px;
+            li {
+                font-size: 1.3em;
+                label {
+                    padding-left: 10px;
+                }
+            }
+        }
+    }
+}
 </style>

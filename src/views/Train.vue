@@ -1,6 +1,5 @@
 <template>
     <div class="train-page">
-        Train page
         <CollectionsSelector
             v-if="currentStatus === EStatus.SelectingCollection"
             confirmButtonText="Next"
@@ -8,13 +7,14 @@
             v-on:confirm="collectionsSelected($event)"
         />
         <div v-if="currentStatus === EStatus.Training" class="training-word">
-            Current word
             <div v-if="currentWord">
-                <p>{{ currentWord.original }}</p>
-                <input v-model="answer" type="text" />
+                <AskWord :word="currentWord.original" v-model="answer"/>
             </div>
-            <button v-on:click="check()">> Check</button>
-            <button v-on:click="closeTraining()">X Close</button>
+            <div class="buttons">
+                <button v-on:click="closeTraining()">X Close</button>
+                <button v-on:click="check()">Skip >></button>
+                <button v-on:click="check()">Check</button>
+            </div>
         </div>
     </div>
 </template>
@@ -22,6 +22,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import CollectionsSelector from '@/components/CollectionsSelector.vue';
+import AskWord from '@/components/AskWord.vue';
 import * as trainServices from '@/services/study/train.services';
 import * as Models from '@/models';
 
@@ -42,7 +43,7 @@ export default defineComponent({
         }
     },
     components: {
-        CollectionsSelector
+        CollectionsSelector, AskWord
     },
     created: async function () {
     },
@@ -57,6 +58,7 @@ export default defineComponent({
             this.$data.selectedCollectionsIds = [];
         },
         check: async function () {
+            console.log(this.$data.answer)
             const word = this.$data.currentWord
             if (word) {
                 if (word.translation.toLowerCase().trim() == this.$data.answer.toLowerCase().trim()) {
@@ -67,15 +69,30 @@ export default defineComponent({
                     console.log('ERROR');
                 }
                 this.getNextWord();
-                this.$data.answer = '';
+            }
+        },
+        skip: async function skip() {
+            const word = this.$data.currentWord;
+            if (word) {
+                trainServices.saveWord(word._id!, word._id!, false);
+                this.getNextWord();
             }
         },
         getNextWord: async function () {
             this.$data.currentWord = await trainServices.nextWord(this.$data.selectedCollectionsIds);
+            this.$data.answer = '';
         }
     }
 });
 </script>
 
 <style scoped lang="scss">
+.train-page {
+    padding: 1em;
+
+    .buttons {
+        margin: 1em;
+        text-align: center;
+    }
+}
 </style>
