@@ -32,7 +32,7 @@ enum EStatus {
 }
 
 export default defineComponent({
-    name: 'Home',
+    name: 'Train',
     data: () => {
         return {
             EStatus: EStatus,
