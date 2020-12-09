@@ -13,18 +13,21 @@
                 <button @click="startTest()">Start Test</button>
             </div>
         </div>
-        <div v-if="currentStatus === EStatus.Testing && test" class="training-word">
+        <div v-if="test && (currentStatus === EStatus.Testing || currentStatus === EStatus.Checking)" class="training-word">
             <div>
                 <AskWord 
                     v-for="(question, index) in test.questions"
                     :key="index"
                     :word="question.question"
+                    :status="currentStatus !== EStatus.Checking ? EAnswerStatus.None : (question.result ? EAnswerStatus.Correct : EAnswerStatus.Wrong)"
+                    :showAnswer="!question.result && currentStatus === EStatus.Checking"
+                    :answer="question.correct"
                     v-model="question.answer"
                 />
             </div>
             <div class="buttons">
-                <button @click="exitTest()">X Close</button>
-                <button @click="check()">Check</button>
+                <button @click="check()" :disabled="!completed()" v-if="currentStatus === EStatus.Testing" >Check</button>
+                <button @click="exitTest()" v-if="currentStatus === EStatus.Checking" >Close</button>
             </div>
         </div>
     </div>
@@ -40,7 +43,8 @@ import * as Models from '@/models';
 enum EStatus {
     SelectingCollection,
     SelectingLenght,
-    Testing
+    Testing,
+    Checking
 }
 
 export default defineComponent({
@@ -48,6 +52,7 @@ export default defineComponent({
     data: () => {
         return {
             EStatus: EStatus,
+            EAnswerStatus: Models.EAnswerStatus,
             currentStatus: EStatus.SelectingCollection,
             selectedCollectionsIds: [] as string[],
             testLenght: 10,
@@ -76,9 +81,12 @@ export default defineComponent({
             const test = this.$data.test;
             if (test) {
                 const testResult = await testServices.checkTest(test);
-                console.log(testResult);
+                this.$data.test = testResult;
+                this.$data.currentStatus = EStatus.Checking;
             }
-
+        },
+        completed: function () : boolean {
+            return this.$data.test?.questions.every(q => q.answer) ?? false;
         }
     }
 });

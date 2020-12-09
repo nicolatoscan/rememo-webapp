@@ -30,7 +30,7 @@ body {
     grid-template-rows: 50px auto;
 }
 .router-wrapper {
-    overflow: hidden;
+    overflow: auto;
 }
 </style>
 

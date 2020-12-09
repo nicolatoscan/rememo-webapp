@@ -6,3 +6,9 @@ export * from './study/Test'
 export interface Id {
     _id: string;
 }
+
+export enum EAnswerStatus {
+    None = -1,
+    Wrong = 0,
+    Correct = 1
+}

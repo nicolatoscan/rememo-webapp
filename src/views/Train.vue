@@ -12,6 +12,7 @@
                     :word="currentWord.original"
                     :answer="currentWord.translation"
                     :showAnswer="showingAnswer"
+                    :status="currentAnswerStatus"
                     v-model="answer"
                 />
             </div>
@@ -41,7 +42,9 @@ export default defineComponent({
     data: () => {
         return {
             EStatus: EStatus,
+            EAnswerStatus: Models.EAnswerStatus,
             currentStatus: EStatus.SelectingCollection,
+            currentAnswerStatus: Models.EAnswerStatus.None,
             selectedCollectionsIds: [] as string[],
             currentWord: null as Models.FullWord | null,
             answer: '',
@@ -70,6 +73,7 @@ export default defineComponent({
             if (word) {
                 const result = word.translation.toLowerCase().trim() == this.$data.answer.toLowerCase().trim();
                 this.$data.resultCSSClassColor = result ? 'correct' : 'error';
+                this.$data.currentAnswerStatus = result ? this.EAnswerStatus.Correct : this.EAnswerStatus.Wrong;
                 if (this.$data.firstTry) {
                     trainServices.saveWord(word.collectionId, word._id!, result);
                     this.$data.firstTry = false;
@@ -77,7 +81,10 @@ export default defineComponent({
                 if (result) {
                     this.getNextWord();
                 }
-                setTimeout(() => { this.$data.resultCSSClassColor = '' }, 600);
+                setTimeout(() => {
+                    this.$data.resultCSSClassColor = '';
+                    this.$data.currentAnswerStatus = this.EAnswerStatus.None;
+                }, 600);
             }
         },
         showAnswer: function () {

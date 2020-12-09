@@ -34,7 +34,6 @@ export async function createWord(collectionId: string, word: Models.Word): Promi
 }
 
 export async function deleteCollection(collectionId: string): Promise<void> {
-    console.log(collectionId)
     try {
         await apiHelpers.del(`/collections/${collectionId}`);
     } catch (err) {

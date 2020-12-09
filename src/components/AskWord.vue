@@ -4,6 +4,8 @@
     <input
         :value="modelValue"
         @input="$emit('update:modelValue', $event.target.value)"
+        :disabled="status !== EAnswerStatus.None"
+        :class="status !== EAnswerStatus.None ? (status === EAnswerStatus.Correct ? 'correct' : 'error') : ''"
         type="text" />
     <p v-if="showAnswer">The correct answer is: {{ answer }}</p>
 </div>
@@ -25,6 +27,15 @@ export default defineComponent({
         showAnswer: {
             type: Boolean,
             default: false
+        },
+        status: {
+            type: Number,
+            default: -1
+        }
+    },
+    data: () => {
+        return {
+            EAnswerStatus: Models.EAnswerStatus
         }
     },
     emits: ['update:modelValue'],
@@ -45,6 +56,16 @@ export default defineComponent({
         width: 90%;
         display: inline-block;
         margin: 0.5em;
+    }
+    input {
+        background-color: white;
+        transition: background-color 0.3s ease;
+        &.correct {
+            background-color: #4F4;
+        }
+        &.error {
+            background-color: #F44;
+        }
     }
 }
 
