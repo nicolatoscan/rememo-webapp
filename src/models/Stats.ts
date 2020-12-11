@@ -1,31 +1,16 @@
-export interface WordTrainStats {
-    _id?: string;
-    original: string;
-    wrongTrain: number;
-    correctTrain: number;
-}
-
-export interface CollectionTrainStats {
+export interface CollectionStats {
     _id?: string,
     index: number;
     name: string;
-    wrongTrain: number;
-    correctTrain: number;
-    words: WordTrainStats[];
+    wrong: number;
+    correct: number;
+    words: WordStats[];
 }
 
-export interface WordTestStats {
+export interface WordStats {
     _id?: string;
-    original: string;
-    wrongTest: number;
-    correctTest: number;
+    name: string;
+    wrong: number;
+    correct: number;
 }
 
-export interface CollectionTestStats {
-    _id?: string,
-    index: number;
-    name: string;
-    wrongTest: number;
-    correctTest: number;
-    words: WordTrainStats[];
-}

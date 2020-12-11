@@ -1,153 +1,99 @@
 <template>
-    <div class="collection-page">
-        <div class="my-collections section">
-            <h1>My collections</h1>
-            <InsertCollection
-                class="form"
-                v-on:collectionCreated="updateCollections($event)"
-            />
-            <div class="collection-list items-list">
-                <div
-                    class="collection-item item"
-                    v-for="coll in collections"
-                    :key="coll._id"
-                    v-bind:class="
-                        coll._id === selectedCollectionId ? 'active' : ''
-                    "
-                    v-on:click="updateSelectedCollection(coll._id)"
-                >
-                    <img
-                        src="../assets/icons/delete.svg"
-                        v-on:click.stop="deleteCollection(coll._id)"
-                    />
-                    <img
-                        src="../assets/icons/share.svg"
-                        v-on:click.stop="shareCollection(coll._id)"
-                    />
-                    <p class="name">{{ coll.name }}</p>
-                    <p class="description">{{ coll.description }}</p>
-                </div>
-            </div>
+    <div class="stats-page">
+        <div class="stats section">            
+            <h1>Test Stats</h1>
+            <PlotStats :correct="collectionTestStats.correct"
+                       :wrong="collectionTestStats.wrong"
+                       :words="collectionTestStats.words" />
+
         </div>
-        <div class="my-words section" v-if="selectedCollection !== null">
-            <h1>{{ selectedCollection.name }}</h1>
-            <InsertWord
-                class="form"
-                v-bind:collectionId="selectedCollection._id"
-                v-on:wordCreated="updateSelectedCollection($event)"
-            />
-            <div class="collection-list items-list">
-                <div
-                    class="collection-item item"
-                    v-for="word in selectedCollection.words"
-                    :key="word._id"
-                >
-                    <img
-                        src="../assets/icons/delete.svg"
-                        v-on:click.stop="
-                            deleteWord(selectedCollection._id, word._id)
-                        "
-                    />
-                    <p class="description">{{ word.original }}</p>
-                    <p class="description">{{ word.translation }}</p>
-                </div>
-            </div>
+        <div class="stats section">
+
+            <h1>Train Stats</h1>
+            <PlotStats :correct="collectionTrainStats.correct"
+                       :wrong="collectionTrainStats.wrong"
+                       :words="collectionTrainStats.words" />
+
         </div>
-    </div>
+    </div>     
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import InsertWord from "@/components/InsertWord.vue";
-import InsertCollection from "@/components/InsertCollection.vue";
+import PlotStats from "@/components/PlotStats.vue";
+
 import * as Models from "@/models";
 import * as collectionServices from "@/services/collection.services";
 import * as shareServices from "@/services/share.services";
 
 export default defineComponent({
-    name: "Home",
+    name: "Stats",
     data: () => {
         return {
-            collections: [] as Models.Collection[],
-            selectedCollectionId: null as string | null,
-            selectedCollection: null as Models.Collection | null,
+            collectionTrainStats: null as Models.CollectionStats | null,
+            collectionTestStats:null as Models.CollectionStats | null,
         };
     },
     components: {
-        InsertWord,
-        InsertCollection,
+        PlotStats,
     },
     created: async function () {
-        await this.updateCollections();
+        this.setta()
     },
     methods: {
-        updateCollections: async function () {
-            try {
-                this.$data.collections = await collectionServices.getMyCollections();
-            } catch (err) {
-                console.log(err.info);
+        setta: function(){
+  
+            this.$data.collectionTrainStats = {
+                                    _id: '3',
+                                    index: 4,
+                                    name: 'collection',
+                                    wrong: 420,
+                                    correct: 421,
+                                    words: [{
+                                        _id : '9',
+                                        name: 'pippo',
+                                        wrong: 4, 
+                                        correct : 5
+                                    },{
+                                        _id : '9',
+                                        name: 'pluto',
+                                        wrong: 420, 
+                                        correct : 530
+                                    }
+                                    ]
             }
-        },
-        updateSelectedCollection: async function (collId: string) {
-            if (collId) {
-                this.$data.selectedCollectionId = collId;
-                try {
-                    this.$data.selectedCollection = await collectionServices.getCollectionById(
-                        this.$data.selectedCollectionId
-                    );
-                } catch (err) {
-                    console.log(err.info);
-                }
+
+            this.$data.collectionTestStats = {
+                                    _id: '3',
+                                    index: 4,
+                                    name: 'collection',
+                                    wrong: 420,
+                                    correct: 421,
+                                    words: [{
+                                        _id : '9',
+                                        name: 'pippo',
+                                        wrong: 4, 
+                                        correct : 5
+                                    },{
+                                        _id : '9',
+                                        name: 'pluto',
+                                        wrong: 420, 
+                                        correct : 530
+                                    }
+                                    ]
             }
-        },
-        deleteCollection: async function (collId: string) {
-            if (!collId) return;
-            if (this.$data.selectedCollectionId === collId) {
-                this.$data.selectedCollectionId = null;
-                this.$data.selectedCollection = null;
-            }
-            try {
-                await collectionServices.deleteCollection(collId);
-            } catch (err) {
-                console.log(err.info);
-            }
-            this.updateCollections();
-        },
-        deleteWord: async function (collId: string, wordId: string) {
-            if (!collId || !wordId) return;
-            try {
-                await collectionServices.deleteWord(collId, wordId);
-            } catch (err) {
-                console.log(err.info);
-            }
-            this.updateSelectedCollection(collId);
-        },
-        shareCollection: async function (collId: string) {
-            if (!collId) return;
-            try {
-                const urlParts = (
-                    await shareServices.shareCollection(collId)
-                ).split("/");
-                const id = urlParts[urlParts.length - 1];
-                const importUrl = `${window.location.origin}/#/import?collectionId=${collId}`;
-                navigator.clipboard.writeText(importUrl);
-                alert(
-                    `Collection shared, url copied in the clipboard or use:\n${importUrl}`
-                );
-            } catch (err) {
-                console.log(err.info);
-            }
-        },
+        }
     },
 });
 </script>
 
 <style scoped lang="scss">
-.collection-page {
+.stats-page {
     display: grid;
     grid-template-rows: 100%;
     grid-template-columns: 50% 50%;
     height: 100%;
+ 
 
     h1 {
         text-align: center;
@@ -196,4 +142,5 @@ export default defineComponent({
         }
     }
 }
+
 </style>
