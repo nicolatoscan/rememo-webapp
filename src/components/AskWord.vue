@@ -6,7 +6,7 @@
         @input="$emit('update:modelValue', $event.target.value)"
         :disabled="status !== EAnswerStatus.None"
         :class="status !== EAnswerStatus.None ? (status === EAnswerStatus.Correct ? 'correct' : 'error') : ''"
-        type="text" />
+        type="text"/>
     <p v-if="showAnswer">The correct answer is: {{ answer }}</p>
 </div>
 </template>
@@ -60,6 +60,7 @@ export default defineComponent({
     input {
         background-color: white;
         transition: background-color 0.3s ease;
+        max-width: 35%;
         &.correct {
             background-color: #4F4;
         }

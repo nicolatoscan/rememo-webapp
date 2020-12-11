@@ -40,6 +40,10 @@ button {
 .form {
   background-color: #333;
   border: 1px solid black;
+  max-width: 75%;
+  margin: auto;
+  border-radius: 10px
+  
 }
 
 .error-message {

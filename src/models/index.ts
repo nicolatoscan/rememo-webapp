@@ -2,6 +2,7 @@ export * from './errors'
 export * from './Auth'
 export * from './Collection'
 export * from './study/Test'
+export * from './study/Learn'
 
 export interface Id {
     _id: string;
