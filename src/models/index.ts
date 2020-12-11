@@ -3,6 +3,7 @@ export * from './Auth'
 export * from './Collection'
 export * from './study/Test'
 export * from './study/Learn'
+export * from './Stats'
 
 export interface Id {
     _id: string;
