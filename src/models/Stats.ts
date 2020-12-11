@@ -14,3 +14,9 @@ export interface WordStats {
     correct: number;
 }
 
+export interface DataChart {
+    label: string,
+    right: number,
+    wrong: number
+}
+

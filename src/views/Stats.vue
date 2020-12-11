@@ -1,32 +1,25 @@
 <template>
-    <div class="stats-page">
+    <div v-if="collectionId" class="stats-page">
         <div class="stats section">
             <h1>Test Stats</h1>
-            <PlotStats
-                v-if="collectionTestStats"
-                :correct="collectionTestStats.correct"
-                :wrong="collectionTestStats.wrong"
-                :words="collectionTestStats.words"
-            />
+            <p>Total correct: {{ totals.test.correct }}</p>
+            <p>Total wrong: {{ totals.test.wrong }}</p>
+            <BarChart :dataSet="dataChartTest" />
         </div>
         <div class="stats section">
             <h1>Train Stats</h1>
-            <PlotStats
-                v-if="collectionTrainStats"
-                :correct="collectionTrainStats.correct"
-                :wrong="collectionTrainStats.wrong"
-                :words="collectionTrainStats.words"
-            />
+            <p>Total correct: {{ totals.train.correct }}</p>
+            <p>Total wrong: {{ totals.train.wrong }}</p>
+            <BarChart :dataSet="dataChartTrain" />
         </div>
     </div>
+    <p v-else>Loading ... </p>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import PlotStats from "@/components/PlotStats.vue";
-
+import BarChart from "@/components/BarChart.vue";
 import * as Models from "@/models";
-
 import * as statsServices from "@/services/stats.services";
 
 export default defineComponent({
@@ -36,27 +29,49 @@ export default defineComponent({
     },
     data: () => {
         return {
-            collectionTrainStats: null as Models.CollectionStats | null,
-            collectionTestStats: null as Models.CollectionStats | null,
-            collectionId: "",
+            totals: {
+                test: { correct: 0, wrong: 0 },
+                train: { correct: 0, wrong: 0 }
+            },
+            collectionId: null as string | null,
+            dataChartTest: [] as Models.DataChart[],
+            dataChartTrain: [] as Models.DataChart[]
         };
     },
     components: {
-        PlotStats,
+        BarChart,
     },
     created: async function () {
-        this.setta();
+        this.createCharts();
     },
     methods: {
-        setta: async function () {
-            this.$data.collectionId = this.$route.params.idColl as string;
+        createCharts: async function () {
+            const collectionId = this.$route.params.idColl as string;
+            if (collectionId) {
+                this.$data.dataChartTest = (await statsServices
+                    .getTrainStats(collectionId))
+                    .words
+                    .map(w => {
+                        return {
+                            label: w.name,
+                            right: w.correct,
+                            wrong: w.wrong
+                        } as Models.DataChart
+                    })
+                
+                this.$data.dataChartTrain = (await statsServices
+                    .getTestStats(collectionId))
+                    .words
+                    .map(w => {
+                        return {
+                            label: w.name,
+                            right: w.correct,
+                            wrong: w.wrong
+                        } as Models.DataChart
+                    })
 
-            this.$data.collectionTrainStats = await statsServices.getTrainStats(
-                this.$data.collectionId
-            );
-            this.$data.collectionTestStats = await statsServices.getTestStats(
-                this.$data.collectionId
-            );
+                this.$data.collectionId = collectionId;
+            }
         },
     },
 });
