@@ -2,6 +2,9 @@
     <header>
         <h1>Rememo</h1>
         <nav>
+            <router-link to="/learn">Learn</router-link>
+            <router-link to="/test">Test</router-link>
+            <router-link to="/train">Train</router-link>
             <router-link to="/collections">Collections</router-link>
             <router-link to="/login">Login</router-link>
         </nav>

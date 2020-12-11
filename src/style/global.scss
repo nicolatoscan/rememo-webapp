@@ -4,6 +4,14 @@ button {
   border-radius: 5px;
   font-weight: bold;
   margin: 0.5em;
+  transition: background-color 0.3s ease;
+
+  &.correct {
+    background-color: #4E4;
+  }
+  &.error {
+    background-color: #E44;
+  }
 }
 
 .insert-modal {
@@ -13,6 +21,7 @@ button {
     margin: 1em auto;
     padding: 0.1em;
     font-size: 1.1em;
+    transition: background-color 0.3s ease;
   }
   button {
     display: block;
@@ -31,4 +40,13 @@ button {
 .form {
   background-color: #333;
   border: 1px solid black;
+  max-width: 75%;
+  margin: auto;
+  border-radius: 10px
+  
+}
+
+.error-message {
+  color: red;
+  text-align: center;
 }

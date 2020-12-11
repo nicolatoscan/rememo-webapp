@@ -7,6 +7,10 @@ export interface Word {
     languageTo?: string;
 }
 
+export interface FullWord extends Word {
+    collectionId: string;
+}
+
 export interface Collection {
     _id?: string,
     index: number;
