@@ -1,21 +1,24 @@
 <template>
     <div class="stats-page">
-        <div class="stats section">            
+        <div class="stats section">
             <h1>Test Stats</h1>
-            <PlotStats :correct="collectionTestStats.correct"
-                       :wrong="collectionTestStats.wrong"
-                       :words="collectionTestStats.words" />
-
+            <PlotStats
+                v-if="collectionTestStats"
+                :correct="collectionTestStats.correct"
+                :wrong="collectionTestStats.wrong"
+                :words="collectionTestStats.words"
+            />
         </div>
         <div class="stats section">
-
             <h1>Train Stats</h1>
-            <PlotStats :correct="collectionTrainStats.correct"
-                       :wrong="collectionTrainStats.wrong"
-                       :words="collectionTrainStats.words" />
-
+            <PlotStats
+                v-if="collectionTrainStats"
+                :correct="collectionTrainStats.correct"
+                :wrong="collectionTrainStats.wrong"
+                :words="collectionTrainStats.words"
+            />
         </div>
-    </div>     
+    </div>
 </template>
 
 <script lang="ts">
@@ -23,66 +26,38 @@ import { defineComponent } from "vue";
 import PlotStats from "@/components/PlotStats.vue";
 
 import * as Models from "@/models";
-import * as collectionServices from "@/services/collection.services";
-import * as shareServices from "@/services/share.services";
+
+import * as statsServices from "@/services/stats.services";
 
 export default defineComponent({
     name: "Stats",
+    props: {
+        collecionId: String,
+    },
     data: () => {
         return {
             collectionTrainStats: null as Models.CollectionStats | null,
-            collectionTestStats:null as Models.CollectionStats | null,
+            collectionTestStats: null as Models.CollectionStats | null,
+            collectionId: "",
         };
     },
     components: {
         PlotStats,
     },
     created: async function () {
-        this.setta()
+        this.setta();
     },
     methods: {
-        setta: function(){
-  
-            this.$data.collectionTrainStats = {
-                                    _id: '3',
-                                    index: 4,
-                                    name: 'collection',
-                                    wrong: 420,
-                                    correct: 421,
-                                    words: [{
-                                        _id : '9',
-                                        name: 'pippo',
-                                        wrong: 4, 
-                                        correct : 5
-                                    },{
-                                        _id : '9',
-                                        name: 'pluto',
-                                        wrong: 420, 
-                                        correct : 530
-                                    }
-                                    ]
-            }
+        setta: async function () {
+            this.$data.collectionId = this.$route.params.idColl as string;
 
-            this.$data.collectionTestStats = {
-                                    _id: '3',
-                                    index: 4,
-                                    name: 'collection',
-                                    wrong: 420,
-                                    correct: 421,
-                                    words: [{
-                                        _id : '9',
-                                        name: 'pippo',
-                                        wrong: 4, 
-                                        correct : 5
-                                    },{
-                                        _id : '9',
-                                        name: 'pluto',
-                                        wrong: 420, 
-                                        correct : 530
-                                    }
-                                    ]
-            }
-        }
+            this.$data.collectionTrainStats = await statsServices.getTrainStats(
+                this.$data.collectionId
+            );
+            this.$data.collectionTestStats = await statsServices.getTestStats(
+                this.$data.collectionId
+            );
+        },
     },
 });
 </script>
@@ -93,7 +68,6 @@ export default defineComponent({
     grid-template-rows: 100%;
     grid-template-columns: 50% 50%;
     height: 100%;
- 
 
     h1 {
         text-align: center;
@@ -142,5 +116,4 @@ export default defineComponent({
         }
     }
 }
-
 </style>

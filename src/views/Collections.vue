@@ -24,6 +24,11 @@
                         src="../assets/icons/share.svg"
                         v-on:click.stop="shareCollection(coll._id)"
                     />
+                    <img
+                        src="../assets/icons/statistics.svg"
+                        v-on:click.stop="statsCollection(coll._id)"
+                    />
+
                     <p class="name">{{ coll.name }}</p>
                     <p class="description">{{ coll.description }}</p>
                 </div>
@@ -63,6 +68,7 @@ import InsertCollection from '@/components/InsertCollection.vue';
 import * as Models from '@/models';
 import * as collectionServices from '@/services/collection.services';
 import * as shareServices from '@/services/share.services';
+import router from '@/router';
 
 export default defineComponent({
     name: 'Home',
@@ -133,6 +139,11 @@ export default defineComponent({
             } catch (err) {
                 console.log(err.info);
             }
+        },
+        statsCollection: async function (collId: string) {
+            if (!collId)
+                return;
+            router.push({ name: 'Stats', params: { idColl: collId } })
         }
     }
 });
