@@ -24,9 +24,6 @@ import * as statsServices from "@/services/stats.services";
 
 export default defineComponent({
     name: "Stats",
-    props: {
-        collecionId: String,
-    },
     data: () => {
         return {
             totals: {
@@ -46,29 +43,35 @@ export default defineComponent({
     },
     methods: {
         createCharts: async function () {
-            const collectionId = this.$route.params.idColl as string;
+            const collectionId = this.$route.params.collectionId as string | undefined;
             if (collectionId) {
-                this.$data.dataChartTest = (await statsServices
-                    .getTestStats(collectionId))
-                    .words
-                    .map(w => {
-                        return {
-                            label: w.name,
-                            right: w.correct,
-                            wrong: w.wrong
-                        } as Models.DataChart
-                    })
-                
-                this.$data.dataChartTrain = (await statsServices
-                    .getTrainStats(collectionId))
-                    .words
-                    .map(w => {
-                        return {
-                            label: w.name,
-                            right: w.correct,
-                            wrong: w.wrong
-                        } as Models.DataChart
-                    })
+                const testStatsCall = statsServices.getStats(collectionId, Models.EStatsType.Test);
+                const trainStatsCall = statsServices.getStats(collectionId, Models.EStatsType.Train);
+                const testStats = await testStatsCall;
+                const trainStats = await trainStatsCall;
+                console.log(testStats)
+                console.log(trainStats)
+                this.$data.totals = {
+                    test: { correct: testStats.correct, wrong: testStats.wrong },
+                    train: { correct: trainStats.correct, wrong: trainStats.wrong },
+                }
+
+
+                this.$data.dataChartTest = testStats.words.map(w => {
+                                                                    return {
+                                                                        label: w.name,
+                                                                        right: w.correct,
+                                                                        wrong: w.wrong
+                                                                    } as Models.DataChart
+                                                                });
+
+                this.$data.dataChartTrain = trainStats.words.map(w => {
+                                                    return {
+                                                        label: w.name,
+                                                        right: w.correct,
+                                                        wrong: w.wrong
+                                                    } as Models.DataChart
+                                                })
 
                 this.$data.collectionId = collectionId;
             }

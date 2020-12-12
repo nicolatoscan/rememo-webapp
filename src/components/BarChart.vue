@@ -24,11 +24,7 @@ export default defineComponent({
             }]
         },
     },
-    render: function() {
-        console.log('Render')
-    },
     mounted: function () {
-        console.log('Mounted')
         this.loadChart();
     },
     methods: {

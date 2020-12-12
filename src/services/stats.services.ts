@@ -1,86 +1,29 @@
 import * as apiHelpers from '@/helpers/api.helper';
 import * as Models from '@/models';
 
-export async function getTrainStats(collectionId: string): Promise<Models.CollectionStats> {
-    
-    let res = {} as Models.CollectionStats
 
+
+export async function getStats(collectionId: string, type: Models.EStatsType) {
     try {
-        const collStats = (await apiHelpers.get(`/stats/${collectionId}`)).data
-        const coll = (await apiHelpers.get(`/collections/${collectionId}`)).data
-        const wordsStats = collStats.words;
-        const words = coll.words;
-
-        res = {
-            _id: collStats._id,
-            index: coll.index,
+        const collStatsCall = apiHelpers.get(`/stats/${collectionId}`);
+        const collCall = apiHelpers.get(`/collections/${collectionId}`);
+        const collStats = (await collStatsCall).data as Models.APICollectionStats;
+        const coll = (await collCall).data as Models.Collection;
+        return {
+            _id: collStats.collectionId,
+            correct: type === Models.EStatsType.Train ? collStats.correctTrain : collStats.correctTest,
+            wrong: type === Models.EStatsType.Train ? collStats.wrongTrain : collStats.wrongTest,
             name: coll.name,
-            wrong: collStats.wrongTrain,
-            correct: collStats.correctTrain,
-            words:[]
-        } 
-
-        for (let i = 0; i < words.length; i++) {
-            res.words.push(
-                {
-                _id : words[i].wordId,
-                name : words[i].original,
-                wrong: wordsStats[i].wrongTrain,
-                correct:wordsStats[i].correctTrain,
-                }
-            )
-            
-        }
-        collStats.words.forEach((word:any) => {
-            //let name = (await apiHelpers.get(`/collections/${collectionId}/words/${word.wordId}`)).data
-            console.log(name)
-            
-        });
+            words: collStats.words.map(wS => {
+                return {
+                    _id: wS.wordId,
+                    correct: type === Models.EStatsType.Train ? wS.correctTrain : wS.correctTest,
+                    wrong: type === Models.EStatsType.Train ? wS.wrongTrain : wS.wrongTest,
+                    name: coll.words.find(w => wS.wordId === w._id)?.original ?? '',
+                } as Models.WordStats;
+            })
+        };
     } catch (err) {
-        throw new Models.ApiError(err.response.status, err.response.data)
+        throw new Models.ApiError(err.response.status, err.response.data);
     }
-    
-    return res
-}
-
-export async function getTestStats(collectionId: string): Promise<Models.CollectionStats> {
-    
-    let res = {} as Models.CollectionStats
-
-    try {
-        const collStats = (await apiHelpers.get(`/stats/${collectionId}`)).data
-        const coll = (await apiHelpers.get(`/collections/${collectionId}`)).data
-        const wordsStats = collStats.words;
-        const words = coll.words;
-
-        res = {
-            _id: collStats._id,
-            index: coll.index,
-            name: coll.name,
-            wrong: collStats.wrongTest,
-            correct: collStats.correctTest,
-            words:[]
-        } 
-
-        for (let i = 0; i < words.length; i++) {
-            res.words.push(
-                {
-                _id : words[i].wordId,
-                name : words[i].original,
-                wrong: wordsStats[i].wrongTest,
-                correct:wordsStats[i].correctTest,
-                }
-            )
-            
-        }
-        collStats.words.forEach((word:any) => {
-            //let name = (await apiHelpers.get(`/collections/${collectionId}/words/${word.wordId}`)).data
-            console.log(name)
-            
-        });
-    } catch (err) {
-        throw new Models.ApiError(err.response.status, err.response.data)
-    }
-    
-    return res
 }

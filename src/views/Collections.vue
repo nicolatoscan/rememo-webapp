@@ -141,7 +141,7 @@ export default defineComponent({
         statsCollection: async function (collId: string) {
             if (!collId)
                 return;
-            router.push({ name: 'Stats', params: { idColl: collId } })
+            router.push(`/stats/${collId}`);
         }
     }
 });
