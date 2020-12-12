@@ -49,7 +49,7 @@ export default defineComponent({
             const collectionId = this.$route.params.idColl as string;
             if (collectionId) {
                 this.$data.dataChartTest = (await statsServices
-                    .getTrainStats(collectionId))
+                    .getTestStats(collectionId))
                     .words
                     .map(w => {
                         return {
@@ -60,7 +60,7 @@ export default defineComponent({
                     })
                 
                 this.$data.dataChartTrain = (await statsServices
-                    .getTestStats(collectionId))
+                    .getTrainStats(collectionId))
                     .words
                     .map(w => {
                         return {

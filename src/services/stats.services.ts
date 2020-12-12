@@ -25,8 +25,8 @@ export async function getTrainStats(collectionId: string): Promise<Models.Collec
                 {
                 _id : words[i].wordId,
                 name : words[i].original,
-                wrong: wordsStats[i].correctTrain,
-                correct:wordsStats[i].wrongTrain,
+                wrong: wordsStats[i].wrongTrain,
+                correct:wordsStats[i].correctTrain,
                 }
             )
             
@@ -57,8 +57,8 @@ export async function getTestStats(collectionId: string): Promise<Models.Collect
             _id: collStats._id,
             index: coll.index,
             name: coll.name,
-            wrong: collStats.wrongTrain,
-            correct: collStats.correctTrain,
+            wrong: collStats.wrongTest,
+            correct: collStats.correctTest,
             words:[]
         } 
 
@@ -67,8 +67,8 @@ export async function getTestStats(collectionId: string): Promise<Models.Collect
                 {
                 _id : words[i].wordId,
                 name : words[i].original,
-                wrong: wordsStats[i].correctTrain,
-                correct:wordsStats[i].wrongTrain,
+                wrong: wordsStats[i].wrongTest,
+                correct:wordsStats[i].correctTest,
                 }
             )
             
