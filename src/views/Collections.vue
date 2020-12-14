@@ -1,68 +1,68 @@
 <template>
     <div class="collection-page">
-        <div class="my-collections section">
+        <div class="my-collections section form">
             <h1>My collections</h1>
             <InsertCollection
-                class="form"
                 @collectionCreated="updateCollections($event)"
             />
             <div v-for="k in getCollectionsKeys()" :key="k">
                 <h3>{{k}}</h3>
-                <div class="collection-list items-list">
-                    <div
+                <ul class="lista clickable">
+                    <li
                         class="collection-item item"
-                        v-for="coll in collections[k]"
+                        v-for="(coll, index) in collections[k]"
                         :key="coll._id"
                         :class="
                             coll._id === selectedCollectionId ? 'active' : ''
                         "
                         @click="updateSelectedCollection(coll._id, myCollectionTag === k)"
                     >
-                        <img
-                            v-if="myCollectionTag === k"
-                            src="../assets/icons/delete.svg"
-                            @click.stop="deleteCollection(coll._id)"
-                        />
-                        <img
-                            v-if="myCollectionTag === k"
-                            src="../assets/icons/share.svg"
-                            @click.stop="shareCollection(coll._id)"
-                        />
-                        <img
-                            src="../assets/icons/statistics.svg"
-                            v-on:click.stop="statsCollection(coll._id)"
-                        />
-                        <p class="name">{{ coll.name }}</p>
-                        <p class="description">{{ coll.description }}</p>
-                    </div>
-                </div>
+                        <div class="list-content">
+                            <p class="title">{{ coll.name }}</p>
+                            <p class="description">{{ coll.description }}</p>
+                        </div>
+                        <div class="actions">
+                            <p v-if="myCollectionTag === k"
+                                @click.stop="deleteCollection(coll._id)"
+                            >Delete</p>
+                            <p v-if="myCollectionTag === k"
+                                :aria-label="shareBallonStatus[index]"
+                                data-balloon-pos="up"
+                                :data-balloon-visible="shareBallonStatus[index] ? 'true': 'false'"
+                                @click.stop="shareCollection(coll._id, index)"
+                            >Share</p>
+                            <p v-on:click.stop="statsCollection(coll._id)"
+                            >Stats</p>
+                        </div>
+                    </li>
+                </ul>
             </div>
         </div>
-        <div class="my-words section" v-if="selectedCollection !== null">
+        <div class="my-words section form" v-if="selectedCollection !== null">
             <h1>{{ selectedCollection.name }}</h1>
             <InsertWord
                 v-if="openedIsMine"
                 class="form"
                 :collectionId="selectedCollection._id"
-                @wordCreated="updateSelectedCollection($event)"
+                @wordCreated="updateSelectedCollection($event, openedIsMine)"
             />
-            <div class="collection-list items-list">
-                <div
+            <ul class="lista">
+                <li
                     class="collection-item item"
                     v-for="word in selectedCollection.words"
                     :key="word._id"
                 >
-                    <img
-                        v-if="openedIsMine"
-                        src="../assets/icons/delete.svg"
-                        @click.stop="
-                            deleteWord(selectedCollection._id, word._id)
-                        "
-                    />
-                    <p class="description">{{ word.original }}</p>
-                    <p class="description">{{ word.translation }}</p>
-                </div>
-            </div>
+                    <div class="list-content">
+                        <p class="title">{{ word.original }}</p>
+                        <p class="description">{{ word.translation }}</p>
+                    </div>
+                    <div class="actions">
+                        <p v-if="openedIsMine"
+                            @click.stop="deleteWord(selectedCollection._id, word._id)"
+                        >Delete</p>
+                    </div>
+                </li>
+            </ul>
         </div>
     </div>
 </template>
@@ -84,7 +84,8 @@ export default defineComponent({
             collections: { } as { [from: string]: Models.Collection[] },
             selectedCollectionId: null as string | null,
             selectedCollection: null as Models.Collection | null,
-            openedIsMine: false
+            openedIsMine: false,
+            shareBallonStatus: {} as { [index: number]: string }
         }
     },
     components: {
@@ -153,18 +154,25 @@ export default defineComponent({
             }
             this.updateSelectedCollection(collId, true);
         },
-        shareCollection: async function (collId: string) {
+        shareCollection: async function (collId: string, index: number) {
             if (!collId)
                 return;
+            this.$data.shareBallonStatus[index] = 'Loading ... ';
+            let url = '';
             try {
-                const urlParts = (await shareServices.shareCollection(collId)).split('/');
-                const id = urlParts[urlParts.length - 1];
-                const importUrl = `${window.location.origin}/#/import/${collId}`
-                navigator.clipboard.writeText(importUrl);
-                alert(`Collection shared, url copied in the clipboard or use:\n${importUrl}`)
-            } catch (err) {
-                console.log(err.info);
+                url = (await shareServices.shareCollection(collId));
+            } catch (ex) {
+                this.$data.shareBallonStatus[index] = 'Error sharing collectios';
+                console.log('Error sharing collectios');
+                setTimeout(() => this.$data.shareBallonStatus[index] = '', 1000);
+                return;
             }
+            const urlParts = url.split('/');
+            const id = urlParts[urlParts.length - 1];
+            const importUrl = `${window.location.origin}/#/import/${collId}`
+            navigator.clipboard.writeText(importUrl);
+            this.$data.shareBallonStatus[index] = 'Link copied to clipboard!';
+            setTimeout(() => this.$data.shareBallonStatus[index] = '', 1000);
         },
         statsCollection: async function (collId: string) {
             if (!collId)
@@ -189,7 +197,7 @@ export default defineComponent({
     .section {
         max-width: 600px;
         width: 90%;
-        margin: auto inherit;
+        margin: 3em;
         padding: 0 1em;
         overflow: auto;
         justify-self: center;
@@ -198,42 +206,6 @@ export default defineComponent({
             padding: 5px;
             padding-left: 2em;
             border-bottom: 1px solid white;
-        }
-
-        .items-list {
-            margin: 1em 0;
-            .item {
-                border-bottom: 1px solid black;
-                margin: 0 0.5em;
-                padding: 1em;
-                cursor: pointer;
-                transition: 0.3s ease background-color;
-
-                &:hover,
-                &.active {
-                    background-color: #333;
-                }
-
-                p {
-                    margin: 0;
-                    &.name {
-                        font-weight: bold;
-                        margin-bottom: 5px;
-                    }
-                }
-
-                img {
-                    width: 25px;
-                    float: right;
-                    padding: 0.4em;
-                    cursor: pointer;
-                    border-radius: 3px;
-                    filter: invert(1);
-                    &:hover {
-                        background-color: #ddd;
-                    }
-                }
-            }
         }
     }
 }

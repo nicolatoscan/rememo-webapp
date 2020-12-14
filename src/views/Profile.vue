@@ -4,16 +4,19 @@
         <p>{{ user.username }}</p>
         <div class="classes-wrapper">
             <h2>Class you created<span @click.stop="showCreationForm = true">+</span></h2>
-            <ul>
+            <ul class="lista clickable">
                 <li
-                    class="clickable"
-                    v-for="cl of classesCreated"
+                    v-for="(cl, index) of classesCreated"
                     :key="cl._id"
                     @click="openClassPage(cl._id)"
                 >
                     <p>{{ cl.name }}</p>
                     <div class="actions">
-                        <p @click.stop="shareClass(cl._id)">Share</p>
+                        <p @click.stop="shareClass(cl._id, index)"
+                            aria-label="Link copied to clipboard!"
+                            data-balloon-pos="up"
+                            :data-balloon-visible="shareBallonVisible[index] ? 'true': 'false'"
+                        >Share</p>
                         <p @click.stop="deleteClass(cl._id)">Delete</p>
                     </div>
                 </li>
@@ -59,7 +62,8 @@ export default defineComponent({
             classesJoined: [] as Models.StudyClass[],
             creatingClassName: '' as string,
             showCreationForm: false,
-            classCreation: false
+            classCreation: false,
+            shareBallonVisible: {} as { [index: number]: boolean }
         }
     },
     created: async function() {
@@ -97,11 +101,12 @@ export default defineComponent({
                 return;
             router.push(`/class/${classId}`);
         },
-        shareClass: async function(classId: string) {
+        shareClass: async function(classId: string, index: number) {
             if (classId) {
                 const importUrl = `${window.location.origin}/#/join/${classId}`
                 navigator.clipboard.writeText(importUrl);
-                alert(`Collection shared, url copied in the clipboard or use:\n${importUrl}`)
+                this.$data.shareBallonVisible[index] = true;
+                setTimeout(() => this.$data.shareBallonVisible[index] = false, 1000);
             }
         },
         deleteClass: async function(classId: string) {

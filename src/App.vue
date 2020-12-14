@@ -10,6 +10,7 @@
 <style lang="scss">
 @import "./style/_variables.scss";
 @import "./style/global.scss";
+@import "./style/balloon.css";
 
 body {
     margin: 0;

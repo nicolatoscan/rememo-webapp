@@ -73,44 +73,56 @@ button {
       }
     }
 
-    ul {
-      text-align: left;
-      list-style: none;
-      padding: 0 1em;
-      li {
-        font-size: 1.2em;
-        padding: 10px;
-        transition: 0.1s background-color ease-in;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        &.clickable {
-          cursor: pointer;
-        }
-
-        &:hover {
-          background-color: #222;
-        }
-
-        .actions {
-          display: flex;
-          cursor: pointer;
-          color: $main-color;
-          p {
-            margin-left: 15px;
-            padding: 5px;
-            font-size: 0.8em;
-            line-height: 0.8em;
-            vertical-align: middle;
-            &:hover {
-              color: scale-color($color: $main-color, $lightness: 70%);
-            }
-          }
-        }
-      }
-    }
     .info {
       color: #888;
+    }
+  }
+}
+
+
+ul.lista {
+  text-align: left;
+  list-style: none;
+  padding: 0 1em;
+  &.clickable li {
+    cursor: pointer;
+  }
+  li {
+    font-size: 1.2em;
+    padding: 10px;
+    transition: 0.1s background-color ease-in;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .list-content {
+      p {
+        margin: 5px;
+      }
+      .description {
+        font-size: 0.8em;
+        color: #AAA;
+      }
+    }
+
+    &:hover {
+      background-color: #222;
+    }
+
+    .actions {
+      display: flex;
+      cursor: pointer;
+      color: $main-color;
+      p {
+        margin: 0 0 0 15px;
+        padding: 5px;
+        font-size: 0.8em;
+        line-height: 0.8em;
+        vertical-align: middle;
+        &:hover {
+          color: scale-color($color: $main-color, $lightness: 70%);
+        }
+      }
     }
   }
 }
