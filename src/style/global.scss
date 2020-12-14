@@ -48,7 +48,6 @@ button {
   padding: 1em;
   text-align: center;
 
-
   h1 {
     margin-bottom: 5px;
   }
@@ -64,13 +63,12 @@ button {
       span {
         float: right;
         padding: 0 0.5em;
+        cursor: pointer;
         &:hover {
           background-color: #222;
-          cursor: pointer;
         }
         &:active {
           background-color: #111;
-          cursor: pointer;
         }
       }
     }
@@ -83,15 +81,86 @@ button {
         font-size: 1.2em;
         padding: 10px;
         transition: 0.1s background-color ease-in;
-        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        &.clickable {
+          cursor: pointer;
+        }
+
         &:hover {
           background-color: #222;
         }
+
+        .actions {
+          display: flex;
+          cursor: pointer;
+          color: $main-color;
+          p {
+            margin-left: 15px;
+            padding: 5px;
+            font-size: 0.8em;
+            line-height: 0.8em;
+            vertical-align: middle;
+            &:hover {
+              color: scale-color($color: $main-color, $lightness: 70%);
+            }
+          }
+        }
       }
+    }
+    .info {
+      color: #888;
     }
   }
 }
 
+.popup {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  background-color: rgba($color: #000000, $alpha: 0.8);
+
+  .wrapper {
+    padding: 2em 0;
+    text-align: center;
+    margin-top: 20vh;
+    max-width: 480px;
+    h3 {
+      margin-top: 0;
+    }
+    input {
+      cursor: pointer;
+    }
+    input[type='text'] {
+      width: 70%;
+      font-size: 1.3em;
+      padding: 0 0.5em;
+    }
+    ul {
+      list-style: none;
+      text-align: left;
+      li {
+        label {
+          padding-left: 10px;
+          cursor: pointer;
+        }
+      }
+    }
+    .buttons {
+      width: 70%;
+      margin: auto;
+      text-align: right;
+      margin-top: 0.6em;
+      button {
+        cursor: pointer;
+        margin-bottom: 0;
+      }
+    }
+  }
+}
 
 .form {
   background-color: #333;

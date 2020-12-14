@@ -17,6 +17,14 @@ export async function createClass(className: string): Promise<void> {
     }
 }
 
+export async function deleteClass(classId: string): Promise<void> {
+    try {
+        await apiHelpers.del(`/class/${classId}`);
+    } catch (err) {
+        throw new Models.ApiError(err.response.status, err.response.data)
+    }
+}
+
 export async function getClassById(classId: string): Promise<Models.StudyClass> {
     try {
         return (await (await apiHelpers.get(`/class/${classId}`))).data as Models.StudyClass;
@@ -28,6 +36,22 @@ export async function getClassById(classId: string): Promise<Models.StudyClass> 
 export async function getFullClassById(classId: string): Promise<Models.FullStudyClass> {
     try {
         return (await (await apiHelpers.get(`/class/${classId}/full`))).data as Models.FullStudyClass
+    } catch (err) {
+        throw new Models.ApiError(err.response.status, err.response.data)
+    }
+}
+
+export async function addCollectionToClass(classId: string, collId: string): Promise<void> {
+    try {
+        await (await apiHelpers.put(`/class/${classId}/addCollection/${collId}`, {}));
+    } catch (err) {
+        throw new Models.ApiError(err.response.status, err.response.data)
+    }
+}
+
+export async function removeCollectionFromClass(classId: string, collId: string): Promise<void> {
+    try {
+        await (await apiHelpers.put(`/class/${classId}/removeCollection/${collId}`, {}));
     } catch (err) {
         throw new Models.ApiError(err.response.status, err.response.data)
     }
