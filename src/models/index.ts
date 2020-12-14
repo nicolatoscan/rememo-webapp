@@ -4,6 +4,7 @@ export * from './Collection'
 export * from './study/Test'
 export * from './study/Learn'
 export * from './Stats'
+export * from './User'
 
 export interface Id {
     _id: string;

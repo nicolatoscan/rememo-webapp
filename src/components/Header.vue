@@ -7,6 +7,7 @@
             <router-link to="/train">Train</router-link>
             <router-link to="/collections">Collections</router-link>
             <router-link to="/login">Login</router-link>
+            <router-link to="/profile">Profile</router-link>
         </nav>
     </header>
 </template>
