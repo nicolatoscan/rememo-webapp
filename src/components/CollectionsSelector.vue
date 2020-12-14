@@ -54,7 +54,7 @@ export default defineComponent({
     },
     created: async function() {
         try {
-            this.$data.collections = await collectionServices.getMyCollections();
+            this.$data.collections = await collectionServices.getAllCollections();
         } catch (err) {
             console.log(err.info);
         }

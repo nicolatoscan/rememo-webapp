@@ -6,35 +6,42 @@
                 class="form"
                 @collectionCreated="updateCollections($event)"
             />
-            <div class="collection-list items-list">
-                <div
-                    class="collection-item item"
-                    v-for="coll in collections"
-                    :key="coll._id"
-                    :class="coll._id === selectedCollectionId ? 'active' : ''"
-                    @click="updateSelectedCollection(coll._id)"
-                >
-                    <img
-                        src="../assets/icons/delete.svg"
-                        @click.stop="deleteCollection(coll._id)"
-                    />
-                    <img
-                        src="../assets/icons/share.svg"
-                        @click.stop="shareCollection(coll._id)"
-                    />
-                    <img
-                        src="../assets/icons/statistics.svg"
-                        v-on:click.stop="statsCollection(coll._id)"
-                    />
-
-                    <p class="name">{{ coll.name }}</p>
-                    <p class="description">{{ coll.description }}</p>
+            <div v-for="k in getCollectionsKeys()" :key="k">
+                <h3>{{k}}</h3>
+                <div class="collection-list items-list">
+                    <div
+                        class="collection-item item"
+                        v-for="coll in collections[k]"
+                        :key="coll._id"
+                        :class="
+                            coll._id === selectedCollectionId ? 'active' : ''
+                        "
+                        @click="updateSelectedCollection(coll._id, myCollectionTag === k)"
+                    >
+                        <img
+                            v-if="myCollectionTag === k"
+                            src="../assets/icons/delete.svg"
+                            @click.stop="deleteCollection(coll._id)"
+                        />
+                        <img
+                            v-if="myCollectionTag === k"
+                            src="../assets/icons/share.svg"
+                            @click.stop="shareCollection(coll._id)"
+                        />
+                        <img
+                            src="../assets/icons/statistics.svg"
+                            v-on:click.stop="statsCollection(coll._id)"
+                        />
+                        <p class="name">{{ coll.name }}</p>
+                        <p class="description">{{ coll.description }}</p>
+                    </div>
                 </div>
             </div>
         </div>
         <div class="my-words section" v-if="selectedCollection !== null">
             <h1>{{ selectedCollection.name }}</h1>
             <InsertWord
+                v-if="openedIsMine"
                 class="form"
                 :collectionId="selectedCollection._id"
                 @wordCreated="updateSelectedCollection($event)"
@@ -46,6 +53,7 @@
                     :key="word._id"
                 >
                     <img
+                        v-if="openedIsMine"
                         src="../assets/icons/delete.svg"
                         @click.stop="
                             deleteWord(selectedCollection._id, word._id)
@@ -72,9 +80,11 @@ export default defineComponent({
     name: 'Home',
     data: () => {
         return {
-            collections: [] as Models.Collection[],
+            myCollectionTag: 'Mine',
+            collections: { } as { [from: string]: Models.Collection[] },
             selectedCollectionId: null as string | null,
             selectedCollection: null as Models.Collection | null,
+            openedIsMine: false
         }
     },
     components: {
@@ -84,14 +94,32 @@ export default defineComponent({
         await this.updateCollections();
     },
     methods: {
+        getCollectionsKeys: function(): string[] {
+            const res = Object.keys(this.$data.collections);
+            return res;
+        },
         updateCollections: async function () {
             try {
-                this.$data.collections = await collectionServices.getMyCollections();
+                const mineTag = this.$data.myCollectionTag;
+                this.$data.collections = {};
+                const colls = await collectionServices.getAllCollections();
+                const separetedColls: { [from: string]: Models.Collection[] } =  { };
+                separetedColls[mineTag] = [];
+                for (const c of colls) {
+                    const k = c.inClassName ?? mineTag
+                    if (separetedColls[k]) {
+                        separetedColls[k].push(c);
+                    } else {
+                        separetedColls[k] = [c];
+                    }
+                }
+                this.$data.collections = separetedColls;
             } catch (err) {
                 console.log(err.info);
             }
         },
-        updateSelectedCollection: async function (collId: string) {
+        updateSelectedCollection: async function (collId: string, mine: boolean) {
+            this.$data.openedIsMine = mine;
             if (collId) {
                 this.$data.selectedCollectionId = collId;
                 try {
@@ -123,7 +151,7 @@ export default defineComponent({
             } catch (err) {
                 console.log(err.info);
             }
-            this.updateSelectedCollection(collId);
+            this.updateSelectedCollection(collId, true);
         },
         shareCollection: async function (collId: string) {
             if (!collId)
@@ -165,10 +193,18 @@ export default defineComponent({
         padding: 0 1em;
         overflow: auto;
         justify-self: center;
+
+        h3 {
+            padding: 5px;
+            padding-left: 2em;
+            border-bottom: 1px solid white;
+        }
+
         .items-list {
             margin: 1em 0;
             .item {
                 border-bottom: 1px solid black;
+                margin: 0 0.5em;
                 padding: 1em;
                 cursor: pointer;
                 transition: 0.3s ease background-color;
