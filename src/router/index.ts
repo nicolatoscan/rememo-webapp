@@ -46,6 +46,11 @@ const routes: Array<RouteRecordRaw> = [
         path: '/stats/:collectionId',
         name: 'Stats',
         component: () => import(/* webpackChunkName: "stats" */ '../views/Stats.vue')
+    },
+    {
+        path: '/class/:classId',
+        name: 'Class',
+        component: () => import(/* webpackChunkName: "class" */ '../views/Class.vue')
     }
 ];
 

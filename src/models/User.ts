@@ -1,8 +1,17 @@
+import { CollectionMin } from './Collection';
+
 export interface StudyClass {
     _id: string,
     name: string,
     collections: string[],
     mine?: boolean
+}
+
+export interface FullStudyClass {
+    _id: string,
+    name: string,
+    students: UserMin[],
+    collections: CollectionMin[],
 }
 
 export interface UserMin {

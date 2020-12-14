@@ -1,11 +1,15 @@
 <template>
-    <div v-if="user" class="profile-wrapper form">
+    <div v-if="user" class="list-page form">
         <h1>{{ user.displayName }}</h1>
         <p>{{ user.username }}</p>
         <div class="classes-wrapper">
             <h2>Class you joined <span @click.stop="showCreationForm = true">+</span></h2>
             <ul>
-                <li v-for="cl of classesCreated" :key="cl._id">{{ cl.name }}</li>
+                <li
+                    v-for="cl of classesCreated"
+                    :key="cl._id"
+                    @click="openClassPage(cl._id)"
+                >{{ cl.name }}</li>
             </ul>
             <h2>Class you created</h2>
             <ul>
@@ -69,6 +73,11 @@ export default defineComponent({
         closeFrom: async function() {
             this.$data.showCreationForm = false;
             this.$data.creatingClassName = '';
+        },
+        openClassPage: async function (classId: string) {
+            if (!classId)
+                return;
+            router.push(`/class/${classId}`);
         }
     }
 });
@@ -106,55 +115,6 @@ export default defineComponent({
             button {
                 cursor: pointer;
                 margin-bottom: 0;
-            }
-        }
-    }
-}
-
-.profile-wrapper {
-    max-width: 480px;
-    margin: 1em auto;
-    padding: 1em;
-    text-align: center;
-
-    h1 {
-        margin-bottom: 5px;
-    }
-
-    p {
-        margin: 0;
-    }
-
-    .classes-wrapper {
-        margin-top: 2em;
-        h2 {
-            border-bottom: 1px solid gainsboro;
-            span {
-                float: right;
-                padding: 0 0.5em;
-                &:hover {
-                    background-color: #222;
-                    cursor: pointer;
-                }
-                &:active {
-                    background-color: #111;
-                    cursor: pointer;
-                }
-            }
-        }
-
-        ul {
-            text-align: left;
-            list-style: none;
-            padding: 0 1em;
-            li {
-                font-size: 1.2em;
-                padding: 10px;
-                transition: 0.1s background-color ease-in;
-
-                &:hover {
-                    background-color: #222;
-                }
             }
         }
     }

@@ -1,3 +1,4 @@
+
 export interface Word {
     _id?: string;
     index: number;
@@ -11,13 +12,16 @@ export interface FullWord extends Word {
     collectionId: string;
 }
 
-export interface Collection {
+export interface CollectionMin {
     _id?: string,
-    index: number;
     name: string;
     description: string;
-    owner: string;
     languageFrom?: string;
     languageTo?: string;
+}
+
+export interface Collection extends CollectionMin {
+    index: number;
+    owner: string;
     words: Word[];
 }
