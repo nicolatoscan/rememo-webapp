@@ -27,7 +27,7 @@ export async function deleteClass(classId: string): Promise<void> {
 
 export async function getClassById(classId: string): Promise<Models.StudyClass> {
     try {
-        return (await (await apiHelpers.get(`/class/${classId}`))).data as Models.StudyClass;
+        return (await apiHelpers.get(`/class/${classId}`)).data as Models.StudyClass;
     } catch (err) {
         throw new Models.ApiError(err.response.status, err.response.data)
     }
@@ -35,7 +35,7 @@ export async function getClassById(classId: string): Promise<Models.StudyClass> 
 
 export async function getFullClassById(classId: string): Promise<Models.FullStudyClass> {
     try {
-        return (await (await apiHelpers.get(`/class/${classId}/full`))).data as Models.FullStudyClass
+        return (await apiHelpers.get(`/class/${classId}/full`)).data as Models.FullStudyClass
     } catch (err) {
         throw new Models.ApiError(err.response.status, err.response.data)
     }
@@ -43,7 +43,7 @@ export async function getFullClassById(classId: string): Promise<Models.FullStud
 
 export async function addCollectionToClass(classId: string, collId: string): Promise<void> {
     try {
-        await (await apiHelpers.put(`/class/${classId}/addCollection/${collId}`, {}));
+        await apiHelpers.put(`/class/${classId}/addCollection/${collId}`, {});
     } catch (err) {
         throw new Models.ApiError(err.response.status, err.response.data)
     }
@@ -51,7 +51,31 @@ export async function addCollectionToClass(classId: string, collId: string): Pro
 
 export async function removeCollectionFromClass(classId: string, collId: string): Promise<void> {
     try {
-        await (await apiHelpers.put(`/class/${classId}/removeCollection/${collId}`, {}));
+        await apiHelpers.put(`/class/${classId}/removeCollection/${collId}`, {});
+    } catch (err) {
+        throw new Models.ApiError(err.response.status, err.response.data)
+    }
+}
+
+export async function joinClass(classId: string): Promise<void> {
+    try {
+        await apiHelpers.put(`/class/${classId}/join`, {});
+    } catch (err) {
+        throw new Models.ApiError(err.response.status, err.response.data)
+    }
+}
+
+export async function leaveClass(classId: string): Promise<void> {
+    try {
+        await apiHelpers.put(`/class/${classId}/leave`, {});
+    } catch (err) {
+        throw new Models.ApiError(err.response.status, err.response.data)
+    }
+}
+
+export async function kickFromClass(classId: string, studentId: string): Promise<void> {
+    try {
+        await apiHelpers.put(`/class/${classId}/kick/${studentId}`, {});
     } catch (err) {
         throw new Models.ApiError(err.response.status, err.response.data)
     }

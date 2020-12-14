@@ -8,7 +8,7 @@
                 {{ word.original }} - {{ word.translation }}
             </li>
         </ul>
-        <button @click="ciao(collection._id)">Import It</button>
+        <button @click="importClass(collection._id)">Import collection</button>
     </div>
 </template>
 
@@ -28,9 +28,10 @@ export default defineComponent({
         }
     },
     created: async function () {
-        if (typeof this.$route.query.collectionId === 'string') {
+        const collectionId = this.$route.params.collectionId as string | undefined;
+        if (typeof collectionId === 'string') {
             try {
-                this.$data.collection = await collectionServices.getCollectionById(this.$route.query.collectionId);
+                this.$data.collection = await collectionServices.getCollectionById(collectionId);
             } catch (err) {
                 this.$data.message = 'Collection not found';
             }
@@ -39,7 +40,7 @@ export default defineComponent({
         }
     },
     methods: {
-        ciao: async function (collectionId: string) {
+        importClass: async function (collectionId: string) {
             try {
                 await shareServices.importCollection(collectionId);
             } catch (err) {

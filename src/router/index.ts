@@ -1,5 +1,4 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
-import Collections from '@/views/Collections.vue';
 import * as authHelpers from '@/helpers/auth.helper';
 
 const routes: Array<RouteRecordRaw> = [
@@ -38,9 +37,14 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import(/* webpackChunkName: "learn" */ '../views/Learn.vue')
     },
     {
-        path: '/import',
+        path: '/import/:collectionId',
         name: 'Import',
-        component: () => import(/* webpackChunkName: "import" */ '../views/Import.vue')
+        component: () => import('../views/Import.vue')
+    },
+    {
+        path: '/join/:classId',
+        name: 'JoinClass',
+        component: () => import(/* webpackChunkName: "join" */ '../views/JoinClass.vue')
     },
     {
         path: '/stats/:collectionId',

@@ -7,7 +7,7 @@
                 <li v-for="s of studyClass.students" :key="s._id">
                     <p>{{ s.username }}</p>
                     <div class="actions">
-                        <p>kick</p>
+                        <p @click.stop="kickStudent(studyClass._id, s._id)">kick</p>
                     </div>
                 </li>
             </ul>
@@ -98,7 +98,19 @@ export default defineComponent({
                 await classServices.removeCollectionFromClass(this.$data.classId, collectionId);
                 await this.loadClass();
             }
-        }
+        },
+        deleteClass: async function(classId: string) {
+            if (classId) {
+                await classServices.deleteClass(classId);
+                await this.loadClass();
+            }
+        },
+        kickStudent: async function(classId: string, studentId: string) {
+            if (classId && studentId) {
+                await classServices.kickFromClass(classId, studentId);
+                await this.loadClass();
+            }
+        },
     },
 });
 </script>

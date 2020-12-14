@@ -13,17 +13,22 @@
                 >
                     <p>{{ cl.name }}</p>
                     <div class="actions">
-                        <p @click.stop="shareCollection(cl._id)">Share</p>
-                        <p @click.stop="deleteCollection(cl._id)">Delete</p>
+                        <p @click.stop="shareClass(cl._id)">Share</p>
+                        <p @click.stop="deleteClass(cl._id)">Delete</p>
                     </div>
                 </li>
             </ul>
-            <p v-if="classesCreated.length === 0" class="info">You haven't created any class</p>
+            <p v-if="classesCreated.length === 0" class="info">You haven't created any classes</p>
             <h2>Class you joined</h2>
             <ul>
-                <li v-for="cl of classesJoined" :key="cl._id">{{ cl.name }}</li>
+                <li v-for="cl of classesJoined" :key="cl._id">
+                    <p>{{ cl.name }}</p>
+                    <div class="actions">
+                        <p @click.stop="leaveClass(cl._id)">Leave</p>
+                    </div>
+                </li>
             </ul>
-            <p v-if="classesJoined.length === 0" class="info">No users joined your class</p>
+            <p v-if="classesJoined.length === 0" class="info">No haven't joined any classes</p>
         </div>
     </div>
     <div v-if="showCreationForm" class="popup" @click.stop="closeFrom()"> 
@@ -92,16 +97,22 @@ export default defineComponent({
                 return;
             router.push(`/class/${classId}`);
         },
-        shareCollection: async function(classId: string) {
+        shareClass: async function(classId: string) {
             if (classId) {
                 const importUrl = `${window.location.origin}/#/todo?${classId}`
                 navigator.clipboard.writeText(importUrl);
                 alert(`Collection shared, url copied in the clipboard or use:\n${importUrl}`)
             }
         },
-        deleteCollection: async function(classId: string) {
+        deleteClass: async function(classId: string) {
             if (classId) {
                 await classServices.deleteClass(classId);
+                await this.updateClasses();
+            }
+        },
+        leaveClass: async function(classId: string) {
+            if (classId) {
+                await classServices.leaveClass(classId);
                 await this.updateClasses();
             }
         }
