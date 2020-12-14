@@ -23,7 +23,7 @@
             </ul>
             <p v-if="classesCreated.length === 0" class="info">You haven't created any classes</p>
             <h2>Class you joined</h2>
-            <ul>
+            <ul class="lista clickable">
                 <li v-for="cl of classesJoined" :key="cl._id">
                     <p>{{ cl.name }}</p>
                     <div class="actions">

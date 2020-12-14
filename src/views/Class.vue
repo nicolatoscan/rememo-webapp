@@ -3,7 +3,7 @@
         <h1>{{ studyClass.name }}</h1>
         <div class="classes-wrapper">
             <h2>Student</h2>
-            <ul>
+            <ul class="lista clickable">
                 <li v-for="s of studyClass.students" :key="s._id">
                     <p>{{ s.username }}</p>
                     <div class="actions">
@@ -13,7 +13,7 @@
             </ul>
             <p v-if="studyClass.students.length === 0" class="info">No students</p>
             <h2>Collections<span @click.stop="showSelectCollForm = true">+</span></h2>
-            <ul>
+            <ul class="lista clickable">
                 <li v-for="c of studyClass.collections" :key="c._id">
                     <p>{{ c.name }}</p>
                     <div class="actions">

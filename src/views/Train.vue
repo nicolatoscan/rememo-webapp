@@ -2,9 +2,8 @@
     <div class="train-page">
         <CollectionsSelector
             v-if="currentStatus === EStatus.SelectingCollection"
-            confirmButtonText="Next"
-            :minWords="3"
-            @confirm="collectionsSelected($event)"
+            :multiSelect="true"
+            @collectionUpdated="updateSelectedCollections($event)"
         />
         <div v-if="currentStatus === EStatus.Training" class="training-word">
             <div v-if="currentWord">
@@ -50,15 +49,23 @@ export default defineComponent({
             answer: '',
             resultCSSClassColor: '',
             firstTry: false,
-            showingAnswer: false
+            showingAnswer: false,
+            selecedCollections: [] as string[]
         }
     },
     components: {
         CollectionsSelector, AskWord
     },
     created: async function () {
+        setInterval(() => {
+            console.log(this.$data.selecedCollections);
+        }, 1000000)
     },
     methods: {
+        updateSelectedCollections: function(ids: string[]) {
+            console.log(ids);
+            
+        },
         collectionsSelected: function (idsSelected: string[]) {
             this.$data.currentStatus = EStatus.Training;
             this.$data.selectedCollectionsIds = idsSelected;

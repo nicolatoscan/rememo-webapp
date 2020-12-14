@@ -96,25 +96,12 @@ export default defineComponent({
     },
     methods: {
         getCollectionsKeys: function(): string[] {
-            const res = Object.keys(this.$data.collections);
-            return res;
+            return Object.keys(this.$data.collections);
         },
         updateCollections: async function () {
             try {
                 const mineTag = this.$data.myCollectionTag;
-                this.$data.collections = {};
-                const colls = await collectionServices.getAllCollections();
-                const separetedColls: { [from: string]: Models.Collection[] } =  { };
-                separetedColls[mineTag] = [];
-                for (const c of colls) {
-                    const k = c.inClassName ?? mineTag
-                    if (separetedColls[k]) {
-                        separetedColls[k].push(c);
-                    } else {
-                        separetedColls[k] = [c];
-                    }
-                }
-                this.$data.collections = separetedColls;
+                this.$data.collections = await collectionServices.getAllCollectionsByClass(mineTag);
             } catch (err) {
                 console.log(err.info);
             }

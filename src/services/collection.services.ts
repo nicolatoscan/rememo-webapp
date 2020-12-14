@@ -1,6 +1,27 @@
 import * as apiHelpers from '@/helpers/api.helper';
 import * as Models from '@/models';
 
+export async function getAllCollectionsByClass(mineTag = 'Mine'): Promise<{ [from: string]: Models.Collection[] }> {
+    let colls: Models.Collection[] = [];
+    const separetedColls: { [from: string]: Models.Collection[] } =  { };
+    separetedColls[mineTag] = [];
+    try {
+        colls = await getAllCollections();
+    } catch (err) {
+        throw new Models.ApiError(err.getStatusCode(), err.getInfo())
+    }
+    for (const c of colls) {
+        const k = c.inClassName ?? mineTag
+        if (separetedColls[k]) {
+            separetedColls[k].push(c);
+        } else {
+            separetedColls[k] = [c];
+        }
+    }
+
+    return separetedColls;
+}
+
 export async function getAllCollections(): Promise<Models.Collection[]> {
     try {
         return (await apiHelpers.get('/collections')).data as Models.Collection[];
