@@ -99,7 +99,7 @@ export default defineComponent({
         },
         shareClass: async function(classId: string) {
             if (classId) {
-                const importUrl = `${window.location.origin}/#/todo?${classId}`
+                const importUrl = `${window.location.origin}/#/join/${classId}`
                 navigator.clipboard.writeText(importUrl);
                 alert(`Collection shared, url copied in the clipboard or use:\n${importUrl}`)
             }

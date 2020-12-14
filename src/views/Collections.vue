@@ -131,7 +131,7 @@ export default defineComponent({
             try {
                 const urlParts = (await shareServices.shareCollection(collId)).split('/');
                 const id = urlParts[urlParts.length - 1];
-                const importUrl = `${window.location.origin}/#/import?collectionId=${collId}`
+                const importUrl = `${window.location.origin}/#/import/${collId}`
                 navigator.clipboard.writeText(importUrl);
                 alert(`Collection shared, url copied in the clipboard or use:\n${importUrl}`)
             } catch (err) {
