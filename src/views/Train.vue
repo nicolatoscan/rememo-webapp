@@ -1,13 +1,17 @@
 <template>
-    <div class="train-page">
-        <CollectionsSelector
-            v-if="currentStatus === EStatus.SelectingCollection"
-            confirmButtonText="Next"
-            :minWords="3"
-            @confirm="collectionsSelected($event)"
-        />
-        <div v-if="currentStatus === EStatus.Training" class="training-word">
-            <div v-if="currentWord">
+    <div class="study-page">
+        <div v-if="currentStatus === EStatus.SelectingCollection" class="form">
+            <CollectionsSelector
+                class="option-section"
+                :multiSelect="true"
+                @collectionUpdated="updateSelectedCollections($event)"
+            />
+            <div class="option-section">
+                <button @click="collectionsSelected()" :disabled="selectedCollectionsIds.length === 0">Start</button>
+            </div>
+        </div>
+        <div v-if="currentStatus === EStatus.Training" class="training-word form">
+            <div v-if="currentWord" class="option-section">
                 <AskWord
                     :word="currentWord.original"
                     :answer="currentWord.translation"
@@ -16,7 +20,7 @@
                     v-model="answer"
                 />
             </div>
-            <div class="buttons">
+            <div class="buttons option-section">
                 <button @click="closeTraining()">X Close</button>
                 <button @click="showAnswer()">Show answer</button>
                 <button @click="check()" :class="resultCSSClassColor">Check</button>
@@ -50,7 +54,8 @@ export default defineComponent({
             answer: '',
             resultCSSClassColor: '',
             firstTry: false,
-            showingAnswer: false
+            showingAnswer: false,
+            selecedCollections: [] as string[]
         }
     },
     components: {
@@ -59,9 +64,12 @@ export default defineComponent({
     created: async function () {
     },
     methods: {
-        collectionsSelected: function (idsSelected: string[]) {
+        updateSelectedCollections: function(ids: string[]) {
+            this.$data.selectedCollectionsIds = ids;
+        },
+        collectionsSelected: function () {
             this.$data.currentStatus = EStatus.Training;
-            this.$data.selectedCollectionsIds = idsSelected;
+            this.$data.selectedCollectionsIds;
             this.getNextWord();
         },
         closeTraining: function () {
@@ -108,12 +116,4 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-.train-page {
-    padding: 1em;
-
-    .buttons {
-        margin: 1em;
-        text-align: center;
-    }
-}
 </style>

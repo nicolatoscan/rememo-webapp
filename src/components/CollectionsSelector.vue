@@ -1,14 +1,16 @@
 <template>
-    <div class="collections-selector form">
-        <h2>Select collections</h2>
-        <div class="collection-list">
-            <p class="error-message" v-if="errorMsg">{{ errorMsg }}</p>
+<div>
+    <h2>Select collections</h2>
+    <div class="collection-list">
+        <p class="error-message" v-if="errorMsg">{{ errorMsg }}</p>
+        <div class="class-wrapper" v-for="k in getCollectionsKeys()" :key="k">
+            <p class="title">{{ k }}</p>
             <ul>
-                <li v-for="coll in collections" :key="coll._id">
+                <li v-for="coll in collections[k]" :key="coll._id">
                     <input
-                        v-if="multiSelector"
+                        v-if="multiSelect"
                         :id="coll._id"
-                        :value="coll"
+                        :value="coll._id"
                         name="collection"
                         type="checkbox"
                         v-model="selectedCollections"
@@ -16,7 +18,7 @@
                     <input
                         v-else
                         :id="coll._id"
-                        :value="coll"
+                        :value="coll._id"
                         name="collection"
                         type="radio"
                         v-model="selectedCollection"
@@ -25,10 +27,8 @@
                 </li>
             </ul>
         </div>
-        <div class="buttons">
-            <button :disabled="!confirmEnabled()" @click="onButtonConfirm()">{{ confirmButtonText }}</button>
-        </div>
     </div>
+</div>
 </template>
 
 <script lang="ts">
@@ -38,85 +38,71 @@ import * as collectionServices from '@/services/collection.services';
 
 export default defineComponent({
     name: 'CollectionsSelector',
+    emits: ['collectionUpdated'],
     props: {
-        multiSelector: { type: Boolean, default: true },
-        confirmButtonText: { type: String, default: 'Confirm' },
-        minCollections: { type: Number, default: 0 },
-        minWords: { type: Number, default: 0 },
+        multiSelect: { type: Boolean, default: false }
     },
     data: () => {
         return {
-            collections: [] as Models.Collection[],
-            selectedCollections: [] as Models.Collection[],
-            selectedCollection: undefined as Models.Collection | undefined,
+            collections: {} as { [from: string]: Models.Collection[] },
+            selectedCollections: [] as string[],
+            selectedCollection: undefined as string | undefined,
             errorMsg: '',
         };
     },
-    created: async function() {
+    created: async function () {
         try {
-            this.$data.collections = await collectionServices.getMyCollections();
+            this.$data.collections = await collectionServices.getAllCollectionsByClass();
         } catch (err) {
             console.log(err.info);
         }
     },
     methods: {
-        onButtonConfirm: function() {
-            if (this.confirmEnabled()) {
-                this.$emit(
-                    'confirm',
-                    this.$props.multiSelector ? this.$data.selectedCollections.map((c) => c._id) : (this.$data.selectedCollection?._id ?? '')
-                );
-            }
+        getCollectionsKeys: function (): string[] {
+            return Object.keys(this.$data.collections);
         },
-        confirmEnabled: function() : boolean {
-            if (!this.$props.multiSelector) {
-                if (!this.$data.selectedCollection) {
-                    this.$data.errorMsg = 'No collection selected';
-                    return false;
-                } 
-                if (this.$data.selectedCollection.words.length < this.$props.minWords) {
-                    this.$data.errorMsg = 'Not enough words selected';
-                    return false;
-                }
-                this.$data.errorMsg = '';
-                return true;
-
-            } else {
-                if (this.$data.selectedCollections.length < this.$props.minCollections) {
-                    this.$data.errorMsg = 'Not enough collections selected';
-                    return false;
-                }
-                if (this.$data.selectedCollections.map((c) => c.words.length).reduce((a, b) => a + b, 0) < this.$props.minWords) {
-                    this.$data.errorMsg = 'Not enough words selected';
-                    return false;
-                }
-                this.$data.errorMsg = '';
-                return true;
-            }
-
-        }
+        log: function (a: any) {
+            console.log(JSON.stringify(a));
+        },
     },
+    watch: {
+        selectedCollections: function (val: string[]) {
+            if (this.$props.multiSelect)
+                this.$emit('collectionUpdated', val);
+        },
+        selectedCollection: function (val: string) {
+            if (!this.$props.multiSelect)
+                this.$emit('collectionUpdated', val);
+        }
+    }
 });
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-@import '../style/_variables.scss';
+@import "../style/_variables.scss";
 
-.collections-selector {
-    padding: 1em;
-    .buttons {
-        text-align: right;
-    }
-    h2 {
+h2 {
+    text-align: center;
+}
+
+.collection-list {
+    .title {
+        margin-top: 2em;
+        font-size: 1.3em;
         text-align: center;
+        padding: 0 1em;
+        margin-bottom: 10px;
+        border-bottom: 1px solid white;
     }
-    .collection-list {
+    .class-wrapper {
+        text-align: center;
         ul {
+            text-align: left;
+            display: inline-block;
             list-style: none;
-            padding: 0;
-            margin: 1em auto;
-            max-width: 600px;
+            padding: 1em;
+            margin: 0.5em auto 1.5em;
             li {
                 font-size: 1.3em;
                 label {

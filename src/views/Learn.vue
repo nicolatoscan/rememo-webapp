@@ -1,20 +1,21 @@
 <template>
     <div class="learn-page">
-        <CollectionsSelector
-            v-if="currentStatus === AppStatus.SelectingCollection"
-            confirmButtonText="Next"
-            :minWords="5"
-            :multiSelector="false"
-            @confirm="receiveSelectedCollection($event)"
-        />
-        <div v-if="currentStatus === AppStatus.ChoosenCollection" class="form">
-            <div class="buttons">
-                <button @click="startLearn()">Start Learn</button>
-                <button @click="resetCollectionState()">Reset</button>
+        <div v-if="currentStatus === AppStatus.SelectingCollection" class="form">
+            <CollectionsSelector
+                class="option-section"
+                v-if="currentStatus === AppStatus.SelectingCollection"
+                :multiSelect="false"
+                @collectionUpdated="receiveSelectedCollection($event)"
+            />
+            <div class="option-section">
+                <div class="buttons">
+                    <button @click="startLearn()" :disabled="!selectedCollectionId">Start Learn</button>
+                    <button @click="resetCollectionState()" :disabled="!selectedCollectionId">Reset</button>
+                </div>
             </div>
         </div>
-        <div v-if="(currentStatus === AppStatus.LearningCollection)" class="training-word">
-            <div>
+        <div v-if="(currentStatus === AppStatus.LearningCollection)" class="form">
+            <div class="option-section">
                 <AskWord 
                     :word="currentWord.original"
                     :answer="currentWord.translation"
@@ -46,7 +47,6 @@ import * as Models from '@/models';
 
 enum AppStatus {
     SelectingCollection,
-    ChoosenCollection,
     LearningCollection
 }
 
@@ -57,7 +57,7 @@ export default defineComponent({
             AppStatus: AppStatus,
             EAnswerStatus: Models.EAnswerStatus,
             currentStatus: AppStatus.SelectingCollection,
-            selectedCollectionId: "" as string,
+            selectedCollectionId: '' as string,
             collectionToLearn: undefined as Models.Collection | undefined,
             collectionToLearnState: [] as Models.LearnStatus[],
             currentWord: undefined as Models.Word | undefined,
@@ -77,32 +77,35 @@ export default defineComponent({
     methods: {
         receiveSelectedCollection: function (idSelected: string) {
             this.$data.selectedCollectionId = idSelected;
-            this.$data.currentStatus = AppStatus.ChoosenCollection;
         },
         startLearn: async function () {
-            this.$data.collectionToLearn = await collectionServices.getCollectionById(this.$data.selectedCollectionId);
-            this.$data.collectionToLearnState = await learnServices.getCollectionLearnState(this.$data.selectedCollectionId);
-            this.$data.collectionToLearnState.sort((a,b) => (a.learned < b.learned) ? -1 : ((a.learned > b.learned) ? 1 : 0));
-            this.$data.currentWordState = this.$data.collectionToLearnState[0];
-            this.$data.currentWord = this.$data.collectionToLearn.words.find(word => word._id === this.$data.currentWordState?.wordId);
-            this.$data.currentStatus = AppStatus.LearningCollection;
+            if (this.$data.selectedCollectionId) {
+                this.$data.collectionToLearn = await collectionServices.getCollectionById(this.$data.selectedCollectionId);
+                this.$data.collectionToLearnState = await learnServices.getCollectionLearnState(this.$data.selectedCollectionId);
+                this.$data.collectionToLearnState.sort((a,b) => (a.learned < b.learned) ? -1 : ((a.learned > b.learned) ? 1 : 0));
+                this.$data.currentWordState = this.$data.collectionToLearnState[0];
+                this.$data.currentWord = this.$data.collectionToLearn.words.find(word => word._id === this.$data.currentWordState?.wordId);
+                this.$data.currentStatus = AppStatus.LearningCollection;
+                this.$data.showingAnswer = false;
+            }
         },
         resetCollectionState: async function () {
-            await learnServices.resetCollectionLearnState(this.$data.selectedCollectionId);
+            if (this.$data.selectedCollectionId) {
+                await learnServices.resetCollectionLearnState(this.$data.selectedCollectionId);
+            }
         },
         exitLearn: function () {
             this.$data.currentStatus = AppStatus.SelectingCollection;
-            this.$data.selectedCollectionId = "";
-            this.$data.answer = "";
+            this.$data.selectedCollectionId = '';
+            this.$data.answer = '';
             this.$data.collectionToLearn = undefined;
             this.$data.collectionToLearnState = [];
+            this.$data.showingAnswer = false;
         },
         checkLearn: async function () {
             const word = this.$data.currentWord;
             const wordState = this.$data.currentWordState;
-            if(this.$data.showingAnswer) {
-                this.$data.showingAnswer = false;
-            }
+            this.$data.showingAnswer = false;
             if (word) {
                 const isCorrectAnswer = word.translation.toLowerCase().trim() === this.$data.answer.toLowerCase().trim();
                 this.$data.resultCSSClassColor = isCorrectAnswer ? 'correct' : 'error';

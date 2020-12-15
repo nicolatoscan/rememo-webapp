@@ -10,6 +10,7 @@
 <style lang="scss">
 @import "./style/_variables.scss";
 @import "./style/global.scss";
+@import "./style/balloon.css";
 
 body {
     margin: 0;
@@ -43,10 +44,7 @@ export default defineComponent({
     name: 'Home',
     components: {
         Header
-    },
-    beforeCreate: () => {
-        // router.push('login');
-    },
+    }
 });
 </script>
 

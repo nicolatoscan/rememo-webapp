@@ -1,5 +1,4 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
-import Collections from '@/views/Collections.vue';
 import * as authHelpers from '@/helpers/auth.helper';
 
 const routes: Array<RouteRecordRaw> = [
@@ -18,6 +17,11 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import(/* webpackChunkName: "login" */ '../views/Login.vue')
     },
     {
+        path: '/profile',
+        name: 'Profile',
+        component: () => import(/* webpackChunkName: "profile" */ '../views/Profile.vue')
+    },
+    {
         path: '/train',
         name: 'Train',
         component: () => import(/* webpackChunkName: "train" */ '../views/Train.vue')
@@ -33,14 +37,24 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import(/* webpackChunkName: "learn" */ '../views/Learn.vue')
     },
     {
-        path: '/import',
+        path: '/import/:collectionId',
         name: 'Import',
-        component: () => import(/* webpackChunkName: "import" */ '../views/Import.vue')
+        component: () => import('../views/Import.vue')
+    },
+    {
+        path: '/join/:classId',
+        name: 'JoinClass',
+        component: () => import(/* webpackChunkName: "join" */ '../views/JoinClass.vue')
     },
     {
         path: '/stats/:collectionId',
         name: 'Stats',
         component: () => import(/* webpackChunkName: "stats" */ '../views/Stats.vue')
+    },
+    {
+        path: '/class/:classId',
+        name: 'Class',
+        component: () => import(/* webpackChunkName: "class" */ '../views/Class.vue')
     }
 ];
 

@@ -49,13 +49,10 @@ export default defineComponent({
                 const trainStatsCall = statsServices.getStats(collectionId, Models.EStatsType.Train);
                 const testStats = await testStatsCall;
                 const trainStats = await trainStatsCall;
-                console.log(testStats)
-                console.log(trainStats)
                 this.$data.totals = {
                     test: { correct: testStats.correct, wrong: testStats.wrong },
                     train: { correct: trainStats.correct, wrong: trainStats.wrong },
                 }
-
 
                 this.$data.dataChartTest = testStats.words.map(w => {
                                                                     return {
