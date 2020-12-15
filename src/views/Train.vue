@@ -5,6 +5,7 @@
             :multiSelect="true"
             @collectionUpdated="updateSelectedCollections($event)"
         />
+        <button @click="collectionsSelected()">Start</button>
         <div v-if="currentStatus === EStatus.Training" class="training-word">
             <div v-if="currentWord">
                 <AskWord
@@ -63,12 +64,12 @@ export default defineComponent({
     },
     methods: {
         updateSelectedCollections: function(ids: string[]) {
+            this.$data.selectedCollectionsIds = ids;
             console.log(ids);
-            
         },
-        collectionsSelected: function (idsSelected: string[]) {
+        collectionsSelected: function () {
             this.$data.currentStatus = EStatus.Training;
-            this.$data.selectedCollectionsIds = idsSelected;
+            this.$data.selectedCollectionsIds;
             this.getNextWord();
         },
         closeTraining: function () {

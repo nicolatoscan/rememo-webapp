@@ -2,9 +2,8 @@
     <div class="train-page">
         <CollectionsSelector
             v-if="currentStatus === EStatus.SelectingCollection"
-            confirmButtonText="Next"
-            :minWords="3"
-            @confirm="collectionsSelected($event)"
+            :multiSelect="true"
+            @collectionUpdated="collectionsSelected($event)"
         />
         <div v-if="currentStatus === EStatus.SelectingLenght" class="lenght-selector form">
             <label for="lenghtTestInput">Test lenght</label>

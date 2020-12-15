@@ -2,10 +2,8 @@
     <div class="learn-page">
         <CollectionsSelector
             v-if="currentStatus === AppStatus.SelectingCollection"
-            confirmButtonText="Next"
-            :minWords="5"
-            :multiSelector="false"
-            @confirm="receiveSelectedCollection($event)"
+            :multiSelect="false"
+            @collectionUpdated="receiveSelectedCollection($event)"
         />
         <div v-if="currentStatus === AppStatus.ChoosenCollection" class="form">
             <div class="buttons">
