@@ -26,8 +26,12 @@ export function getUsername(): string {
     if (username)
         return username;
     if (token) {
-        username = (jwt.decode(token) as any)['username'] ?? '';
-        return username;
+        try {
+            username = (jwt.decode(token) as any)['username'] ?? '';
+            return username;
+        } catch {
+            return '';
+        }
     }
     return '';
 }

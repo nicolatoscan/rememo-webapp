@@ -112,6 +112,10 @@
             </div>
         </div>
     </div>
+    <div v-if="userError" class="full-screen-message">
+        <p>User not logged in, log in again</p>
+        <p class="clickable" @click="logout()">Log in again</p>
+    </div>
 </template>
 
 <script lang="ts">
@@ -141,7 +145,8 @@ export default defineComponent({
             creatingClassName: '' as string,
             showCreationForm: false,
             classCreation: false,
-            shareBallonVisible: {} as { [index: number]: boolean }
+            shareBallonVisible: {} as { [index: number]: boolean },
+            userError: false
         }
     },
     created: async function () {
@@ -149,12 +154,20 @@ export default defineComponent({
     },
     methods: {
         getUserData: async function() {
-            const user = await userServices.getUserInfo();
-            this.$data.editingData.username = user.username;
-            this.$data.editingData.displayName = user.displayName;
-            this.$data.editingData.email = user.email;
-            this.$data.user = user;
-            await this.updateClasses();
+            try {
+                const user = await userServices.getUserInfo();
+                if (user) {
+                    this.$data.editingData.username = user.username;
+                    this.$data.editingData.displayName = user.displayName;
+                    this.$data.editingData.email = user.email;
+                    this.$data.user = user;
+                    await this.updateClasses();
+                } else {
+                    this.$data.userError = true;
+                }
+            } catch {
+                this.$data.userError = true;
+            }
         },
         updateClasses: async function () {
             const created: Models.StudyClass[] = [];

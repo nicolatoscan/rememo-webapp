@@ -1,8 +1,12 @@
 <template>
-    <p>{{ message }}</p>
-    <div v-if="studyClass !== null">
-        <p>Do you want to join: {{ studyClass.name }}</p>
-        <button @click="joinClass(studyClass._id)">Join</button>
+    <div class="full-page-message">
+        <div class="content">
+            <p>{{ message }}</p>
+            <div v-if="studyClass !== null">
+                <h3>Do you want to join: {{ studyClass.name }}</h3>
+                <button @click="joinClass(studyClass._id)">Join</button>
+            </div>
+        </div>
     </div>
 </template>
 

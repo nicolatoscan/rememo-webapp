@@ -1,5 +1,5 @@
 <template>
-    <div class="learn-page">
+    <div class="study-page learn-page">
         <div v-if="currentStatus === AppStatus.SelectingCollection" class="form">
             <CollectionsSelector
                 class="option-section"

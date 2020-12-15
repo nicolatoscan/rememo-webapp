@@ -1,6 +1,9 @@
 <template>
     <div class="collection-page">
-        <div class="my-collections section form" :class="selectedCollection !== null ? 'closed-small-screen' : ''">
+        <div
+            class="my-collections section form"
+            :class="selectedCollection !== null ? 'closed-small-screen' : ''"
+        >
             <h1>My collections</h1>
             <InsertCollection @collectionCreated="updateCollections($event)" />
             <div v-for="k in getCollectionsKeys()" :key="k">
@@ -27,12 +30,6 @@
                         <div class="actions">
                             <p
                                 v-if="myCollectionTag === k"
-                                @click.stop="deleteCollection(coll._id)"
-                            >
-                                Delete
-                            </p>
-                            <p
-                                v-if="myCollectionTag === k"
                                 :aria-label="shareBallonStatus[index]"
                                 data-balloon-pos="up"
                                 :data-balloon-visible="
@@ -42,7 +39,7 @@
                             >
                                 Share
                             </p>
-                            <p v-on:click.stop="statsCollection(coll._id)">
+                            <p @click.stop="statsCollection(coll._id)">
                                 Stats
                             </p>
                         </div>
@@ -50,7 +47,11 @@
                 </ul>
             </div>
         </div>
-        <div class="my-words section form" v-if="selectedCollection !== null" :class="selectedCollection === null ? 'closed-small-screen' : ''">
+        <div
+            class="my-words section form"
+            v-if="selectedCollection !== null"
+            :class="selectedCollection === null ? 'closed-small-screen' : ''"
+        >
             <button class="close-button" @click="closeCollection()">X</button>
             <div class="header">
                 <div class="titles">
@@ -72,17 +73,47 @@
                         name="collection-description"
                         v-model="editing.description"
                     />
-
                 </div>
                 <div v-if="openedIsMine" class="actions line">
-                    <p v-if="!editingCollection" @click="editingCollection = true">
+                    <p
+                        :aria-label="shareBallonStatusOnCollPage"
+                        data-balloon-pos="up"
+                        :data-balloon-visible="shareBallonStatusOnCollPage ? 'true' : 'false'"
+                        v-if="!editingCollection"
+                        @click.stop="shareCollection(selectedCollection._id, undefined)"
+                    >
+                        Share
+                    </p>
+                    <p
+                        v-if="!editingCollection"
+                        @click.stop="statsCollection(selectedCollection._id)"
+                    >
+                        Stats
+                    </p>
+                    <p
+                        v-if="!editingCollection"
+                        @click="editingCollection = true"
+                    >
                         Edit Name
                     </p>
-                    <p v-if="!editingCollection" @click="deleteCollection(selectedCollection._id)">Delete</p>
-                    <p v-if="editingCollection" @click="editingCollection = false">
+                    <p
+                        v-if="!editingCollection"
+                        @click="deleteCollection(selectedCollection._id)"
+                    >
+                        Delete
+                    </p>
+                    <p
+                        v-if="editingCollection"
+                        @click="editingCollection = false"
+                    >
                         Cancel
                     </p>
-                    <p v-if="editingCollection" @click="updateCollectionInfo(selectedCollection._id)">Save</p>
+                    <p
+                        v-if="editingCollection"
+                        @click="updateCollectionInfo(selectedCollection._id)"
+                    >
+                        Save
+                    </p>
                 </div>
             </div>
             <InsertWord
@@ -140,6 +171,7 @@ export default defineComponent({
             openedIsMine: false,
             shareBallonStatus: {} as { [index: number]: string },
             editingCollection: false,
+            shareBallonStatusOnCollPage: '',
             editing: {
                 name: '',
                 description: ''
@@ -201,25 +233,39 @@ export default defineComponent({
             }
             this.updateSelectedCollection(collId, true);
         },
-        shareCollection: async function (collId: string, index: number) {
+        shareCollection: async function (collId: string, index: number | undefined = undefined) {
             if (!collId)
                 return;
-            this.$data.shareBallonStatus[index] = 'Loading ... ';
+            if (index !== undefined)
+                this.$data.shareBallonStatus[index] = 'Loading ... ';
+            else
+                this.$data.shareBallonStatusOnCollPage = 'Loading ... ';
             let url = '';
             try {
                 url = (await shareServices.shareCollection(collId));
             } catch (ex) {
-                this.$data.shareBallonStatus[index] = 'Error sharing collectios';
+                if (index !== undefined) {
+                    this.$data.shareBallonStatus[index] = 'Error sharing collectios';
+                    setTimeout(() => this.$data.shareBallonStatus[index] = '', 1000);
+                } else {
+                    this.$data.shareBallonStatusOnCollPage = 'Error sharing collectios';
+                    setTimeout(() => this.$data.shareBallonStatusOnCollPage = '', 1000);
+
+                }
                 console.log('Error sharing collectios');
-                setTimeout(() => this.$data.shareBallonStatus[index] = '', 1000);
                 return;
             }
             const urlParts = url.split('/');
             const id = urlParts[urlParts.length - 1];
             const importUrl = `${window.location.origin}/#/import/${collId}`
             navigator.clipboard.writeText(importUrl);
-            this.$data.shareBallonStatus[index] = 'Link copied to clipboard!';
-            setTimeout(() => this.$data.shareBallonStatus[index] = '', 1000);
+            if (index !== undefined) {
+                this.$data.shareBallonStatus[index] = 'Link copied to clipboard!';
+                setTimeout(() => this.$data.shareBallonStatus[index] = '', 1000);
+            } else {
+                this.$data.shareBallonStatusOnCollPage = 'Link copied to clipboard!';
+                setTimeout(() => this.$data.shareBallonStatusOnCollPage = '', 1000);
+            }
         },
         statsCollection: async function (collId: string) {
             if (!collId)
@@ -233,7 +279,7 @@ export default defineComponent({
                 this.updateSelectedCollection(collId, true);
             }
         },
-        closeCollection: function() {
+        closeCollection: function () {
             this.$data.selectedCollectionId = null;
             this.$data.selectedCollection = null;
         }

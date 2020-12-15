@@ -1,14 +1,21 @@
 <template>
-    <p>{{ message }}</p>
-    <div v-if="collection !== null">
-        <p>Do you want to import:</p>
-        <p>{{ collection.name }} - {{ collection.description }}</p>
-        <ul>
-            <li v-for="word in collection.words" :key="word._id">
-                {{ word.original }} - {{ word.translation }}
-            </li>
-        </ul>
-        <button @click="importClass(collection._id)">Import collection</button>
+    <div class="full-page-message">
+        <div class="content">
+            <p>{{ message }}</p>
+            <div v-if="collection !== null">
+                <h3>Do you want to import the collection: {{ collection.name }}</h3>
+                <p>{{ collection.description }}</p>
+                <h4>Words:</h4>
+                <ul>
+                    <li v-for="word in collection.words" :key="word._id">
+                        <b>{{ word.original }}</b>: {{ word.translation }}
+                    </li>
+                </ul>
+                <button @click="importClass(collection._id)">
+                    Import collection
+                </button>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -51,3 +58,7 @@ export default defineComponent({
     }
 });
 </script>
+
+<style scoped lang="scss">
+
+</style>
