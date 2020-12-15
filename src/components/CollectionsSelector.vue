@@ -56,7 +56,6 @@ export default defineComponent({
         } catch (err) {
             console.log(err.info);
         }
-        console.log(this.multiSelect);
     },
     methods: {
         getCollectionsKeys: function (): string[] {

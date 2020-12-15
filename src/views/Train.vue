@@ -1,5 +1,5 @@
 <template>
-    <div class="train-page">
+    <div class="study-page">
         <div v-if="currentStatus === EStatus.SelectingCollection" class="form">
             <CollectionsSelector
                 class="option-section"
@@ -116,20 +116,4 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-.train-page {
-    padding: 1em;
-    .form {
-        padding: 1em;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-
-        .option-section {
-            display: inline-block;
-            button.big {
-                font-size: 1.5em;
-            }
-        }
-    }
-}
 </style>

@@ -1,19 +1,21 @@
 <template>
-    <div class="train-page">
-        <CollectionsSelector
-            v-if="currentStatus === EStatus.SelectingCollection"
-            :multiSelect="true"
-            @collectionUpdated="collectionsSelected($event)"
-        />
-        <div v-if="currentStatus === EStatus.SelectingLenght" class="lenght-selector form">
-            <label for="lenghtTestInput">Test lenght</label>
-            <input id="lenghtTestInput" type="number" min="0" max="100" v-model="testLenght" />
+    <div class="study-page">
+        <div v-if="currentStatus === EStatus.SelectingCollection" class="form">
+            <CollectionsSelector
+                class="option-section"
+                :multiSelect="true"
+                @collectionUpdated="updateSelectedCollections($event)"
+            />
+            <div class="option-section">
+            <h2 for="lenghtTestInput">Test lenght</h2>
+            <input type="number" min="0" max="100" v-model="testLenght" />
             <div class="buttons">
-                <button @click="startTest()">Start Test</button>
+                <button @click="startTest()" :disabled="selectedCollectionsIds.length === 0">Start Test</button>
+            </div>
             </div>
         </div>
-        <div v-if="test && (currentStatus === EStatus.Testing || currentStatus === EStatus.Checking)" class="training-word">
-            <div>
+        <div v-if="test && (currentStatus === EStatus.Testing || currentStatus === EStatus.Checking)" class="form">
+            <div class="option-section">
                 <AskWord 
                     v-for="(question, index) in test.questions"
                     :key="index"
@@ -64,9 +66,8 @@ export default defineComponent({
     created: async function () {
     },
     methods: {
-        collectionsSelected: function (idsSelected: string[]) {
-            this.$data.selectedCollectionsIds = idsSelected;
-            this.$data.currentStatus = EStatus.SelectingLenght;
+        updateSelectedCollections: function(ids: string[]) {
+            this.$data.selectedCollectionsIds = ids;
         },
         startTest: async function () {
             this.$data.test = await testServices.generateTest(this.$data.selectedCollectionsIds, this.$data.testLenght);
@@ -92,12 +93,4 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-.train-page {
-    padding: 1em;
-
-    .buttons {
-        margin: 1em;
-        text-align: center;
-    }
-}
 </style>
