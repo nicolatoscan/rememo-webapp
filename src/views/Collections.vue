@@ -64,6 +64,9 @@
                 </li>
             </ul>
         </div>
+        <div v-else class="full-screen-message">
+            <p>Select a collection</p>
+        </div>
     </div>
 </template>
 

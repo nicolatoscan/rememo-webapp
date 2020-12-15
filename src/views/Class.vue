@@ -1,13 +1,42 @@
 <template>
     <div v-if="studyClass" class="list-page form">
-        <h1>{{ studyClass.name }}</h1>
+        <div class="header">
+            <div class="titles">
+                <h1>{{ studyClass.name }}</h1>
+            </div>
+            <div class="titles editing-area" v-if="editingName">
+                <p v-if="editingUpdateError" class="error-message">{{editingUpdateError}}</p>
+                <label for="">Display Name</label>
+                <input
+                    class="editing"
+                    type="text"
+                    name="class-name"
+                    v-model="editingNameText"
+                />
+            </div>
+            <div class="actions line">
+                <p v-if="!editingName" @click="editingName= true">
+                    Edit Name
+                </p>
+                <p v-if="!editingName" @click="deleteClass()">Delete</p>
+                <p v-if="editingName" @click="editingName= false">
+                    Cancel
+                </p>
+                <p
+                    v-if="editingName"
+                    @click="updateClassName()"
+                >
+                    Save
+                </p>
+            </div>
+        </div>
         <div class="classes-wrapper">
             <h2>Student</h2>
             <ul class="lista clickable">
                 <li v-for="s of studyClass.students" :key="s._id">
                     <p>{{ s.username }}</p>
                     <div class="actions">
-                        <p @click.stop="kickStudent(studyClass._id, s._id)">kick</p>
+                        <p @click.stop="kickStudent(s._id)">kick</p>
                     </div>
                 </li>
             </ul>
@@ -30,6 +59,10 @@
         <div class="stats-wrapper">
             <ClassStatsGraph :classId="classId" :selectedCollection="selectedCollection" v-if="classId" />
         </div>
+    </div>
+    <div v-else class="full-screen-message">
+        <p>No Class found</p>
+        <router-link to="/profile">Go to your profile</router-link>
     </div>
     <div v-if="showSelectCollForm" class="popup" @click.stop="closeFrom()"> 
         <div class="wrapper form" @click.stop>
@@ -68,7 +101,9 @@ export default defineComponent({
             selectedCollectionsToAdd: [] as Models.CollectionMin[],
             showSelectCollForm: false,
             addingCollections: false,
-            selectedCollection: ''
+            selectedCollection: '',
+            editingName: false,
+            editingNameText: ''
         }
     },
     created: async function() {
@@ -83,6 +118,7 @@ export default defineComponent({
         loadClass: async function() {
             if (this.$data.classId) {
                 const studyClass = await classServices.getFullClassById(this.$data.classId);
+                this.$data.editingNameText = studyClass.name;
                 this.$data.myCollectionsToAdd = (await collectionServices.getMyCollectionsMin())
                     .filter(coll => 
                         !studyClass.collections.map(c => c._id).includes(coll._id)
@@ -112,18 +148,25 @@ export default defineComponent({
                 await this.loadClass();
             }
         },
-        deleteClass: async function(classId: string) {
-            if (classId) {
-                await classServices.deleteClass(classId);
+        deleteClass: async function() {
+            if (this.$data.classId) {
+                await classServices.deleteClass(this.$data.classId);
+            }
+            router.push('/profile');
+        },
+        kickStudent: async function(studentId: string) {
+            if (this.$data.classId && studentId) {
+                await classServices.kickFromClass(this.$data.classId, studentId);
                 await this.loadClass();
             }
         },
-        kickStudent: async function(classId: string, studentId: string) {
-            if (classId && studentId) {
-                await classServices.kickFromClass(classId, studentId);
+        updateClassName: async function() {
+            if (this.$data.classId && this.$data.editingNameText) {
+                this.$data.editingName = false;
+                await classServices.renemaClass(this.$data.classId, this.$data.editingNameText);
                 await this.loadClass();
             }
-        },
+        }
     },
 });
 </script>

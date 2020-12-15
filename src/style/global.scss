@@ -14,20 +14,34 @@ button {
   }
 }
 
+.full-screen-message {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #888;
+  flex-direction: column;
+  a {
+    color: $main-color;
+    text-decoration: none;
+  }
+}
+
 .study-page {
   padding: 1em;
   .form {
-      padding: 1em;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+    padding: 1em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 
-      .option-section {
-          display: inline-block;
-          button.big {
-              font-size: 1.5em;
-          }
+    .option-section {
+      display: inline-block;
+      button.big {
+        font-size: 1.5em;
       }
+    }
   }
 }
 
@@ -96,7 +110,6 @@ button {
   }
 }
 
-
 ul.lista {
   text-align: left;
   list-style: none;
@@ -118,16 +131,16 @@ ul.lista {
       }
       .description {
         font-size: 0.8em;
-        color: #AAA;
+        color: #aaa;
       }
     }
 
-    &:hover, &.active {
+    &:hover,
+    &.active {
       background-color: #222;
     }
   }
 }
-
 
 .actions {
   display: flex;
@@ -143,7 +156,7 @@ ul.lista {
       color: scale-color($color: $main-color, $lightness: 70%);
     }
     &.disabled {
-      color: #DDD;
+      color: #ddd;
     }
   }
 
@@ -207,4 +220,27 @@ ul.lista {
   max-width: 620px;
   margin: auto;
   border-radius: 10px;
+
+  .header {
+    padding: 1em 0 3em;
+    .titles {
+      margin: 1em;
+    }
+
+    .editing-area {
+      max-width: 400px;
+      margin: auto;
+      label {
+        text-align: left;
+        display: block;
+        margin-left: 10%;
+        font-weight: 500;
+        font-size: 0.8em;
+      }
+      input {
+        width: 80%;
+        margin-bottom: 5px;
+      }
+    }
+  }
 }

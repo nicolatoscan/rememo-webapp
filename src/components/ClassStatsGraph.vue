@@ -32,6 +32,7 @@ export default defineComponent({
             
             const classStats = this.$data.classStats;
             console.log(classStats);
+
             
             const ctx = (this.$refs["chart"] as HTMLCanvasElement).getContext('2d');
             if (ctx) {
@@ -52,6 +53,7 @@ export default defineComponent({
                     yValues = idNamesColls.map(x => -classStats.collections[x.id].wrong);
                 }
 
+                this.$data.chart?.clear();
                 this.$data.chart = new Chart(ctx, {
                     type: 'bar',
                     data: {

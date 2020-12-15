@@ -80,3 +80,11 @@ export async function kickFromClass(classId: string, studentId: string): Promise
         throw new Models.ApiError(err.response.status, err.response.data)
     }
 }
+
+export async function renemaClass(classId: string, name: string): Promise<void> {
+    try {
+        await apiHelpers.put(`/class/${classId}`, { name: name });
+    } catch (err) {
+        throw new Models.ApiError(err.response.status, err.response.data)
+    }
+}

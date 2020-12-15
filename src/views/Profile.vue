@@ -11,24 +11,28 @@
                 <input
                     class="editing"
                     type="text"
+                    name="name"
                     v-model="editingData.displayName"
                 />
                 <label for="">Email</label>
                 <input
                     class="editing"
                     type="text"
+                    name="email"
                     v-model="editingData.email"
                 />
                 <label for="">New Password</label>
                 <input
                     class="editing"
-                    type="text"
+                    type="password"
+                    name="new-password"
                     v-model="editingData.newPassword"
                 />
                 <label for="">Insert your current password *</label>
                 <input
                     class="editing"
-                    type="text"
+                    type="password"
+                    name="password"
                     v-model="editingData.oldPassword"
                 />
             </div>
@@ -73,7 +77,6 @@
                         >
                             Share
                         </p>
-                        <p @click.stop="deleteClass(cl._id)">Delete</p>
                     </div>
                 </li>
             </ul>
@@ -246,25 +249,4 @@ export default defineComponent({
 
 <style scoped lang="scss">
 @import "../style/_variables.scss";
-
-.header {
-    padding: 1em 0 3em;
-    .titles {
-        margin: 1em;
-    }
-
-    .editing-area {
-        label {
-            text-align: left;
-            display: block;
-            margin-left: 10%;
-            font-weight: 500;
-            font-size: 0.8em;
-        }
-        input {
-            width: 80%;
-            margin-bottom: 5px;
-        }
-    }
-}
 </style>
