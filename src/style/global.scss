@@ -142,6 +142,9 @@ ul.lista {
     &:hover {
       color: scale-color($color: $main-color, $lightness: 70%);
     }
+    &.disabled {
+      color: #DDD;
+    }
   }
 
   &.line {

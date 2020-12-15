@@ -6,23 +6,55 @@
                 <p>{{ user.username }}</p>
             </div>
             <div class="titles editing-area" v-if="editingProfile">
+                <p v-if="editingUpdateError" class="error-message">{{editingUpdateError}}</p>
                 <label for="">Display Name</label>
-                <input class="editing" type="text" v-model="editingData.displayName">
+                <input
+                    class="editing"
+                    type="text"
+                    v-model="editingData.displayName"
+                />
                 <label for="">Email</label>
-                <input class="editing" type="text" v-model="editingData.email">
+                <input
+                    class="editing"
+                    type="text"
+                    v-model="editingData.email"
+                />
                 <label for="">New Password</label>
-                <input class="editing" type="text" v-model="editingData.oldPassword">
+                <input
+                    class="editing"
+                    type="text"
+                    v-model="editingData.newPassword"
+                />
                 <label for="">Insert your current password *</label>
-                <input class="editing" type="text" v-model="editingData.newPassword">
+                <input
+                    class="editing"
+                    type="text"
+                    v-model="editingData.oldPassword"
+                />
             </div>
             <div class="actions line">
-                <p v-if="!editingProfile" @click="editingProfile = true">Edit profile</p>
+                <p v-if="!editingProfile" @click="editingProfile = true">
+                    Edit profile
+                </p>
                 <p v-if="!editingProfile" @click="logout()">Logout</p>
-                <p v-if="editingProfile" @click="editingProfile = false">Save</p>
+                <p v-if="editingProfile" @click="editingProfile = false">
+                    Cancel
+                </p>
+                <p
+                    v-if="editingProfile"
+                    @click="updateUserInfo()"
+                    :class="validateEditingUserInfo() ? '' : 'disabled'"
+                >
+                    Save
+                </p>
             </div>
         </div>
         <div class="classes-wrapper">
-            <h2>Class you created<span @click.stop="showCreationForm = true">+</span></h2>
+            <h2>
+                Class you created<span @click.stop="showCreationForm = true"
+                    >+</span
+                >
+            </h2>
             <ul class="lista clickable">
                 <li
                     v-for="(cl, index) of classesCreated"
@@ -31,16 +63,23 @@
                 >
                     <p>{{ cl.name }}</p>
                     <div class="actions">
-                        <p @click.stop="shareClass(cl._id, index)"
+                        <p
+                            @click.stop="shareClass(cl._id, index)"
                             aria-label="Link copied to clipboard!"
                             data-balloon-pos="up"
-                            :data-balloon-visible="shareBallonVisible[index] ? 'true': 'false'"
-                        >Share</p>
+                            :data-balloon-visible="
+                                shareBallonVisible[index] ? 'true' : 'false'
+                            "
+                        >
+                            Share
+                        </p>
                         <p @click.stop="deleteClass(cl._id)">Delete</p>
                     </div>
                 </li>
             </ul>
-            <p v-if="classesCreated.length === 0" class="info">You haven't created any classes</p>
+            <p v-if="classesCreated.length === 0" class="info">
+                You haven't created any classes
+            </p>
             <h2>Class you joined</h2>
             <ul class="lista clickable">
                 <li v-for="cl of classesJoined" :key="cl._id">
@@ -50,16 +89,23 @@
                     </div>
                 </li>
             </ul>
-            <p v-if="classesJoined.length === 0" class="info">No haven't joined any classes</p>
+            <p v-if="classesJoined.length === 0" class="info">
+                No haven't joined any classes
+            </p>
         </div>
     </div>
-    <div v-if="showCreationForm" class="popup" @click.stop="closeFrom()"> 
+    <div v-if="showCreationForm" class="popup" @click.stop="closeFrom()">
         <div class="wrapper form" @click.stop>
             <h3>Create a new class:</h3>
             <input placeholder="class name" v-model="creatingClassName" />
             <div class="buttons">
                 <button @click.stop="closeFrom()">Cancel</button>
-                <button :disabled="creatingClassName === ''" @click.stop="createClass()">Create</button>
+                <button
+                    :disabled="creatingClassName === ''"
+                    @click.stop="createClass()"
+                >
+                    Create
+                </button>
             </div>
         </div>
     </div>
@@ -78,7 +124,9 @@ export default defineComponent({
     data: () => {
         return {
             editingProfile: false,
+            editingUpdateError: '',
             editingData: {
+                username: '',
                 displayName: '',
                 oldPassword: '',
                 newPassword: '',
@@ -93,15 +141,19 @@ export default defineComponent({
             shareBallonVisible: {} as { [index: number]: boolean }
         }
     },
-    created: async function() {
-        const user = await userServices.getUserInfo();
-        this.$data.editingData.displayName = user.displayName;
-        this.$data.editingData.email = user.email;
-        this.$data.user = user;
-        await this.updateClasses();
+    created: async function () {
+        await this.getUserData();
     },
     methods: {
-        updateClasses: async function() {
+        getUserData: async function() {
+            const user = await userServices.getUserInfo();
+            this.$data.editingData.username = user.username;
+            this.$data.editingData.displayName = user.displayName;
+            this.$data.editingData.email = user.email;
+            this.$data.user = user;
+            await this.updateClasses();
+        },
+        updateClasses: async function () {
             const created: Models.StudyClass[] = [];
             const joined: Models.StudyClass[] = [];
             for (const c of await classServices.getClasses()) {
@@ -113,7 +165,7 @@ export default defineComponent({
             this.$data.classesCreated = created;
             this.$data.classesJoined = joined;
         },
-        createClass: async function() {
+        createClass: async function () {
             if (typeof this.$data.creatingClassName === 'string') {
                 this.$data.classCreation = false;
                 this.$data.classCreation = true;
@@ -122,16 +174,16 @@ export default defineComponent({
                 this.closeFrom();
             }
         },
-        closeFrom: async function() {
+        closeFrom: async function () {
             this.$data.showCreationForm = false;
             this.$data.creatingClassName = '';
         },
-        openClassPage: async function(classId: string) {
+        openClassPage: async function (classId: string) {
             if (!classId)
                 return;
             router.push(`/class/${classId}`);
         },
-        shareClass: async function(classId: string, index: number) {
+        shareClass: async function (classId: string, index: number) {
             if (classId) {
                 const importUrl = `${window.location.origin}/#/join/${classId}`
                 navigator.clipboard.writeText(importUrl);
@@ -139,19 +191,52 @@ export default defineComponent({
                 setTimeout(() => this.$data.shareBallonVisible[index] = false, 1000);
             }
         },
-        deleteClass: async function(classId: string) {
+        deleteClass: async function (classId: string) {
             if (classId) {
                 await classServices.deleteClass(classId);
                 await this.updateClasses();
             }
         },
-        leaveClass: async function(classId: string) {
+        leaveClass: async function (classId: string) {
             if (classId) {
                 await classServices.leaveClass(classId);
                 await this.updateClasses();
             }
         },
-        logout: function() {
+        validateEditingUserInfo: function () {
+            if ((this.$data.editingData.oldPassword.length < 6) ||
+                (this.$data.editingData.newPassword && this.$data.editingData.newPassword.length < 6) ||
+                (this.$data.editingData.displayName && this.$data.editingData.displayName.trim().length < 6) ||
+                (this.$data.editingData.email && this.$data.editingData.email.trim().length < 6))
+                return false;
+            return true;
+        },
+        updateUserInfo: async function () {
+            if (this.$data.editingData.username && !this.validateEditingUserInfo())
+                return;
+
+            const toUpdateUserInfo: { [id: string]: string } = {
+                username: this.$data.editingData.username,
+                password: this.$data.editingData.oldPassword
+            };
+
+            if (this.$data.editingData.displayName)
+                toUpdateUserInfo.displayName = this.$data.editingData.displayName;
+            if (this.$data.editingData.email)
+                toUpdateUserInfo.email = this.$data.editingData.email;
+            if (this.$data.editingData.newPassword)
+                toUpdateUserInfo.newPassword = this.$data.editingData.newPassword;
+
+            try {
+                await userServices.updateUserInfo(toUpdateUserInfo);
+            } catch (err) {
+                this.$data.editingUpdateError = err.info;
+                return;
+            }
+            this.$data.editingProfile = false;
+            await this.getUserData();
+        },
+        logout: function () {
             authHelpers.logout();
             router.push('login');
         }
