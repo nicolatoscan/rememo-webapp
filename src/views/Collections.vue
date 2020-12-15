@@ -2,11 +2,9 @@
     <div class="collection-page">
         <div class="my-collections section form">
             <h1>My collections</h1>
-            <InsertCollection
-                @collectionCreated="updateCollections($event)"
-            />
+            <InsertCollection @collectionCreated="updateCollections($event)" />
             <div v-for="k in getCollectionsKeys()" :key="k">
-                <h3>{{k}}</h3>
+                <h3>{{ k }}</h3>
                 <ul class="lista clickable">
                     <li
                         class="collection-item item"
@@ -15,34 +13,80 @@
                         :class="
                             coll._id === selectedCollectionId ? 'active' : ''
                         "
-                        @click="updateSelectedCollection(coll._id, myCollectionTag === k)"
+                        @click="
+                            updateSelectedCollection(
+                                coll._id,
+                                myCollectionTag === k
+                            )
+                        "
                     >
                         <div class="list-content">
                             <p class="title">{{ coll.name }}</p>
                             <p class="description">{{ coll.description }}</p>
                         </div>
                         <div class="actions">
-                            <p v-if="myCollectionTag === k"
+                            <p
+                                v-if="myCollectionTag === k"
                                 @click.stop="deleteCollection(coll._id)"
-                            >Delete</p>
-                            <p v-if="myCollectionTag === k"
+                            >
+                                Delete
+                            </p>
+                            <p
+                                v-if="myCollectionTag === k"
                                 :aria-label="shareBallonStatus[index]"
                                 data-balloon-pos="up"
-                                :data-balloon-visible="shareBallonStatus[index] ? 'true': 'false'"
+                                :data-balloon-visible="
+                                    shareBallonStatus[index] ? 'true' : 'false'
+                                "
                                 @click.stop="shareCollection(coll._id, index)"
-                            >Share</p>
-                            <p v-on:click.stop="statsCollection(coll._id)"
-                            >Stats</p>
+                            >
+                                Share
+                            </p>
+                            <p v-on:click.stop="statsCollection(coll._id)">
+                                Stats
+                            </p>
                         </div>
                     </li>
                 </ul>
             </div>
         </div>
         <div class="my-words section form" v-if="selectedCollection !== null">
-            <h1>{{ selectedCollection.name }}</h1>
+            <div class="header">
+                <div class="titles">
+                    <h1>{{ selectedCollection.name }}</h1>
+                    <p>{{ selectedCollection.description }}</p>
+                </div>
+                <div class="titles editing-area" v-if="editingCollection">
+                    <label for="">Name</label>
+                    <input
+                        class="editing"
+                        type="text"
+                        name="collection-name"
+                        v-model="editing.name"
+                    />
+                    <label for="">Description</label>
+                    <input
+                        class="editing"
+                        type="text"
+                        name="collection-description"
+                        v-model="editing.description"
+                    />
+
+                </div>
+                <div v-if="openedIsMine" class="actions line">
+                    <p v-if="!editingCollection" @click="editingCollection = true">
+                        Edit Name
+                    </p>
+                    <p v-if="!editingCollection" @click="deleteCollection(selectedCollection._id)">Delete</p>
+                    <p v-if="editingCollection" @click="editingCollection = false">
+                        Cancel
+                    </p>
+                    <p v-if="editingCollection" @click="updateCollectionInfo(selectedCollection._id)">Save</p>
+                </div>
+            </div>
             <InsertWord
                 v-if="openedIsMine"
-                class="form"
+                class="insert-modal"
                 :collectionId="selectedCollection._id"
                 @wordCreated="updateSelectedCollection($event, openedIsMine)"
             />
@@ -57,9 +101,14 @@
                         <p class="description">{{ word.translation }}</p>
                     </div>
                     <div class="actions">
-                        <p v-if="openedIsMine"
-                            @click.stop="deleteWord(selectedCollection._id, word._id)"
-                        >Delete</p>
+                        <p
+                            v-if="openedIsMine"
+                            @click.stop="
+                                deleteWord(selectedCollection._id, word._id)
+                            "
+                        >
+                            Delete
+                        </p>
                     </div>
                 </li>
             </ul>
@@ -84,11 +133,16 @@ export default defineComponent({
     data: () => {
         return {
             myCollectionTag: 'Mine',
-            collections: { } as { [from: string]: Models.Collection[] },
+            collections: {} as { [from: string]: Models.Collection[] },
             selectedCollectionId: null as string | null,
             selectedCollection: null as Models.Collection | null,
             openedIsMine: false,
-            shareBallonStatus: {} as { [index: number]: string }
+            shareBallonStatus: {} as { [index: number]: string },
+            editingCollection: false,
+            editing: {
+                name: '',
+                description: ''
+            }
         }
     },
     components: {
@@ -98,7 +152,7 @@ export default defineComponent({
         await this.updateCollections();
     },
     methods: {
-        getCollectionsKeys: function(): string[] {
+        getCollectionsKeys: function (): string[] {
             return Object.keys(this.$data.collections);
         },
         updateCollections: async function () {
@@ -115,6 +169,8 @@ export default defineComponent({
                 this.$data.selectedCollectionId = collId;
                 try {
                     this.$data.selectedCollection = await collectionServices.getCollectionById(this.$data.selectedCollectionId);
+                    this.$data.editing.name = this.$data.selectedCollection.name;
+                    this.$data.editing.description = this.$data.selectedCollection.description;
                 } catch (err) {
                     console.log(err.info);
                 }
@@ -168,6 +224,13 @@ export default defineComponent({
             if (!collId)
                 return;
             router.push(`/stats/${collId}`);
+        },
+        updateCollectionInfo: async function (collId: string) {
+            if (this.editingCollection && collId && this.$data.editing.name && this.$data.editing.description) {
+                this.$data.editingCollection = false;
+                await collectionServices.updateCollection(collId, this.$data.editing.name, this.$data.editing.description);
+                this.updateSelectedCollection(collId, true);
+            }
         }
     }
 });

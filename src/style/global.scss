@@ -222,18 +222,29 @@ ul.lista {
   border-radius: 10px;
 
   .header {
-    padding: 1em 0 3em;
+    padding: 1em 0 2.5em;
+    display: flex;
+    flex-direction: column;
     .titles {
       margin: 1em;
+    }
+    h1 {
+      margin-bottom: 0em;
+    }
+    p {
+      text-align: center;
     }
 
     .editing-area {
       max-width: 400px;
       margin: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 320px;
       label {
         text-align: left;
         display: block;
-        margin-left: 10%;
         font-weight: 500;
         font-size: 0.8em;
       }

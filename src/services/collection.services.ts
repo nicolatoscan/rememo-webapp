@@ -85,3 +85,15 @@ export async function deleteWord(collectionId: string, wordId: string): Promise<
         throw new Models.ApiError(err.response.status, err.response.data)
     }
 }
+export async function updateCollection(collectionId: string, name: string, description: string): Promise<void> {
+    try {
+        await apiHelpers.put(`/collections/${collectionId}`, {
+            name: name,
+            description: description,
+            index: 1
+        });
+    } catch (err) {
+        throw new Models.ApiError(err.response.status, err.response.data)
+    }
+}
+
