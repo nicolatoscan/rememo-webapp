@@ -14,14 +14,21 @@
             <p v-if="studyClass.students.length === 0" class="info">No students</p>
             <h2>Collections<span @click.stop="showSelectCollForm = true">+</span></h2>
             <ul class="lista clickable">
-                <li v-for="c of studyClass.collections" :key="c._id">
+                <li 
+                    v-for="c of studyClass.collections"
+                    :key="c._id"
+                    :class="{ active: selectedCollection === c._id }"
+                    @click.stop="selectedCollection = (selectedCollection === c._id ? '' : c._id)">
                     <p>{{ c.name }}</p>
                     <div class="actions">
-                        <p @click.stop="addCollectionFromClass(c._id)">Remove</p>
+                        <p @click.stop="removeCollectionFromClass(c._id)">Remove</p>
                     </div>
                 </li>
             </ul>
             <p v-if="studyClass.collections.length === 0" class="info">No students</p>
+        </div>
+        <div class="stats-wrapper">
+            <ClassStatsGraph :classId="classId" :selectedCollection="selectedCollection" v-if="classId" />
         </div>
     </div>
     <div v-if="showSelectCollForm" class="popup" @click.stop="closeFrom()"> 
@@ -44,6 +51,7 @@
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue';
+import ClassStatsGraph from '@/components/ClassStatsGraph.vue'
 import router from '@/router';
 import * as Models from '@/models';
 import * as classServices from '@/services/class.services';
@@ -51,6 +59,7 @@ import * as collectionServices from '@/services/collection.services';
 
 export default defineComponent({
     name: 'Class',
+    components: { ClassStatsGraph },
     data: () => {
         return {
             classId: undefined as string | undefined,
@@ -59,12 +68,16 @@ export default defineComponent({
             selectedCollectionsToAdd: [] as Models.CollectionMin[],
             showSelectCollForm: false,
             addingCollections: false,
+            selectedCollection: ''
         }
     },
     created: async function() {
         this.$data.classId = this.$route.params.classId as string | undefined;
-        this.loadClass();
-        this.$data.myCollectionsToAdd = await collectionServices.getMyCollectionsMin();
+        if (this.$data.classId) {
+            this.loadClass();
+            this.$data.myCollectionsToAdd = await collectionServices.getMyCollectionsMin();
+        }
+
     },
     methods: {
         loadClass: async function() {
@@ -93,7 +106,7 @@ export default defineComponent({
                 this.$data.selectedCollectionsToAdd = [];
             }
         },
-        addCollectionFromClass: async function (collectionId: string) {
+        removeCollectionFromClass: async function (collectionId: string) {
             if (this.$data.classId && collectionId) {
                 await classServices.removeCollectionFromClass(this.$data.classId, collectionId);
                 await this.loadClass();
@@ -118,4 +131,8 @@ export default defineComponent({
 <style scoped lang="scss">
 @import "../style/_variables.scss";
 
+.form {
+    width: 100% !important;
+    max-width: 960px !important;
+}
 </style>

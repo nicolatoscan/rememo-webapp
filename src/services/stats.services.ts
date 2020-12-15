@@ -27,3 +27,11 @@ export async function getStats(collectionId: string, type: Models.EStatsType) {
         throw new Models.ApiError(err.response.status, err.response.data);
     }
 }
+
+export async function getClassStats(classId: string): Promise<Models.ClassStats> {
+    try {
+        return (await apiHelpers.get(`/stats/class/${classId}`)).data as Models.ClassStats;
+    } catch (err) {
+        throw new Models.ApiError(err.response.status, err.response.data)
+    }
+}
