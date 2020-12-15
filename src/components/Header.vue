@@ -17,10 +17,10 @@ import * as authHelpers from '@/helpers/auth.helper';
 export default defineComponent({
     name: 'Header',
     methods: {
-        getUsername: function(): string {
+        getUsername: function (): string {
             return authHelpers.getUsername();
         },
-        isLogged: function(): boolean {
+        isLogged: function (): boolean {
             return authHelpers.isLoggedIn();
         }
     }
@@ -30,7 +30,15 @@ export default defineComponent({
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 @import "../style/_variables.scss";
-
+@media screen and (max-width: 900px) {
+    h1 {
+        display: none !important;
+    }
+    a {
+        margin: 0 0.3em !important;
+        padding: 0.3em 0.3em !important;
+    }
+}
 header {
     background-color: $main-color;
     text-align: left;

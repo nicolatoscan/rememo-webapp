@@ -1,6 +1,6 @@
 <template>
     <div class="collection-page">
-        <div class="my-collections section form">
+        <div class="my-collections section form" :class="selectedCollection !== null ? 'closed-small-screen' : ''">
             <h1>My collections</h1>
             <InsertCollection @collectionCreated="updateCollections($event)" />
             <div v-for="k in getCollectionsKeys()" :key="k">
@@ -50,7 +50,8 @@
                 </ul>
             </div>
         </div>
-        <div class="my-words section form" v-if="selectedCollection !== null">
+        <div class="my-words section form" v-if="selectedCollection !== null" :class="selectedCollection === null ? 'closed-small-screen' : ''">
+            <button class="close-button" @click="closeCollection()">X</button>
             <div class="header">
                 <div class="titles">
                     <h1>{{ selectedCollection.name }}</h1>
@@ -113,7 +114,7 @@
                 </li>
             </ul>
         </div>
-        <div v-else class="full-screen-message">
+        <div class="full-screen-message closed-small-screen">
             <p>Select a collection</p>
         </div>
     </div>
@@ -231,12 +232,25 @@ export default defineComponent({
                 await collectionServices.updateCollection(collId, this.$data.editing.name, this.$data.editing.description);
                 this.updateSelectedCollection(collId, true);
             }
+        },
+        closeCollection: function() {
+            this.$data.selectedCollectionId = null;
+            this.$data.selectedCollection = null;
         }
     }
 });
 </script>
 
 <style scoped lang="scss">
+@media screen and (max-width: 900px) {
+    .closed-small-screen {
+        display: none;
+    }
+    .collection-page {
+        display: flex !important;
+    }
+}
+
 .collection-page {
     display: grid;
     grid-template-rows: 100%;
@@ -251,7 +265,7 @@ export default defineComponent({
         max-width: 600px;
         width: 90%;
         margin: 3em;
-        padding: 0 1em;
+        padding: 1em;
         overflow: auto;
         justify-self: center;
 
@@ -261,5 +275,11 @@ export default defineComponent({
             border-bottom: 1px solid white;
         }
     }
+}
+
+.close-button {
+    float: right;
+    position: relative;
+    cursor: pointer;
 }
 </style>
