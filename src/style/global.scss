@@ -125,22 +125,28 @@ ul.lista {
     &:hover {
       background-color: #222;
     }
+  }
+}
 
-    .actions {
-      display: flex;
-      cursor: pointer;
-      color: $main-color;
-      p {
-        margin: 0 0 0 15px;
-        padding: 5px;
-        font-size: 0.8em;
-        line-height: 0.8em;
-        vertical-align: middle;
-        &:hover {
-          color: scale-color($color: $main-color, $lightness: 70%);
-        }
-      }
+
+.actions {
+  display: flex;
+  cursor: pointer;
+  color: $main-color;
+  p {
+    margin: 0 0 0 15px;
+    padding: 5px;
+    font-size: 0.8em;
+    line-height: 0.8em;
+    vertical-align: middle;
+    &:hover {
+      color: scale-color($color: $main-color, $lightness: 70%);
     }
+  }
+
+  &.line {
+    justify-content: center;
+    align-items: center;
   }
 }
 
@@ -194,7 +200,8 @@ ul.lista {
 .form {
   background-color: #333;
   border: 1px solid black;
-  max-width: 75%;
+  width: 75%;
+  max-width: 620px;
   margin: auto;
   border-radius: 10px;
 }

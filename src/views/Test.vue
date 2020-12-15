@@ -7,11 +7,11 @@
                 @collectionUpdated="updateSelectedCollections($event)"
             />
             <div class="option-section">
-            <h2 for="lenghtTestInput">Test lenght</h2>
-            <input type="number" min="0" max="100" v-model="testLenght" />
-            <div class="buttons">
-                <button @click="startTest()" :disabled="selectedCollectionsIds.length === 0">Start Test</button>
-            </div>
+                <h2 for="lenghtTestInput">Test lenght</h2>
+                <input type="number" min="0" max="100" v-model="testLenght" />
+                <div class="buttons">
+                    <button @click="startTest()" :disabled="selectedCollectionsIds.length === 0">Start Test</button>
+                </div>
             </div>
         </div>
         <div v-if="test && (currentStatus === EStatus.Testing || currentStatus === EStatus.Checking)" class="form">

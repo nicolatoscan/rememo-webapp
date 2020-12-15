@@ -71,7 +71,7 @@ export default defineComponent({
                 this.$emit('collectionUpdated', val);
         },
         selectedCollection: function (val: string) {
-            if (this.$props.multiSelect)
+            if (!this.$props.multiSelect)
                 this.$emit('collectionUpdated', val);
         }
     }

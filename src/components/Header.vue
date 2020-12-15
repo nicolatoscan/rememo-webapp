@@ -6,17 +6,24 @@
             <router-link to="/test">Test</router-link>
             <router-link to="/train">Train</router-link>
             <router-link to="/collections">Collections</router-link>
-            <router-link to="/login">Login</router-link>
-            <router-link to="/profile">Profile</router-link>
+            <router-link to="/profile">{{ getUsername() }}</router-link>
         </nav>
     </header>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-
+import * as authHelpers from '@/helpers/auth.helper';
 export default defineComponent({
-    name: 'Header'
+    name: 'Header',
+    methods: {
+        getUsername: function(): string {
+            return authHelpers.getUsername();
+        },
+        isLogged: function(): boolean {
+            return authHelpers.isLoggedIn();
+        }
+    }
 });
 </script>
 

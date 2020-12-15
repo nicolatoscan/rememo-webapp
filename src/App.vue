@@ -44,10 +44,7 @@ export default defineComponent({
     name: 'Home',
     components: {
         Header
-    },
-    beforeCreate: () => {
-        // router.push('login');
-    },
+    }
 });
 </script>
 

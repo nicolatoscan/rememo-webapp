@@ -1,7 +1,26 @@
 <template>
     <div v-if="user" class="list-page form">
-        <h1>{{ user.displayName }}</h1>
-        <p>{{ user.username }}</p>
+        <div class="header">
+            <div class="titles">
+                <h1>{{ user.displayName }}</h1>
+                <p>{{ user.username }}</p>
+            </div>
+            <div class="titles editing-area" v-if="editingProfile">
+                <label for="">Display Name</label>
+                <input class="editing" type="text" v-model="editingData.displayName">
+                <label for="">Email</label>
+                <input class="editing" type="text" v-model="editingData.email">
+                <label for="">New Password</label>
+                <input class="editing" type="text" v-model="editingData.oldPassword">
+                <label for="">Insert your current password *</label>
+                <input class="editing" type="text" v-model="editingData.newPassword">
+            </div>
+            <div class="actions line">
+                <p v-if="!editingProfile" @click="editingProfile = true">Edit profile</p>
+                <p v-if="!editingProfile" @click="logout()">Logout</p>
+                <p v-if="editingProfile" @click="editingProfile = false">Save</p>
+            </div>
+        </div>
         <div class="classes-wrapper">
             <h2>Class you created<span @click.stop="showCreationForm = true">+</span></h2>
             <ul class="lista clickable">
@@ -52,11 +71,19 @@ import router from '@/router';
 import * as Models from '@/models';
 import * as userServices from '@/services/user.services';
 import * as classServices from '@/services/class.services';
+import * as authHelpers from '@/helpers/auth.helper';
 
 export default defineComponent({
     name: 'Profile',
     data: () => {
         return {
+            editingProfile: false,
+            editingData: {
+                displayName: '',
+                oldPassword: '',
+                newPassword: '',
+                email: '',
+            },
             user: null as Models.User | null,
             classesCreated: [] as Models.StudyClass[],
             classesJoined: [] as Models.StudyClass[],
@@ -67,7 +94,10 @@ export default defineComponent({
         }
     },
     created: async function() {
-        this.$data.user = await userServices.getUserInfo();
+        const user = await userServices.getUserInfo();
+        this.$data.editingData.displayName = user.displayName;
+        this.$data.editingData.email = user.email;
+        this.$data.user = user;
         await this.updateClasses();
     },
     methods: {
@@ -120,6 +150,10 @@ export default defineComponent({
                 await classServices.leaveClass(classId);
                 await this.updateClasses();
             }
+        },
+        logout: function() {
+            authHelpers.logout();
+            router.push('login');
         }
     }
 });
@@ -128,4 +162,24 @@ export default defineComponent({
 <style scoped lang="scss">
 @import "../style/_variables.scss";
 
+.header {
+    padding: 1em 0 3em;
+    .titles {
+        margin: 1em;
+    }
+
+    .editing-area {
+        label {
+            text-align: left;
+            display: block;
+            margin-left: 10%;
+            font-weight: 500;
+            font-size: 0.8em;
+        }
+        input {
+            width: 80%;
+            margin-bottom: 5px;
+        }
+    }
+}
 </style>
