@@ -1,5 +1,5 @@
 <template>
-<div class="wrapper form">
+<div class="wrapper">
     <p>{{ word }}</p>
     <input
         :value="modelValue"

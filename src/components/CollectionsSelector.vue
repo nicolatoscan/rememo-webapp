@@ -1,4 +1,5 @@
 <template>
+<div>
     <h2>Select collections</h2>
     <div class="collection-list">
         <p class="error-message" v-if="errorMsg">{{ errorMsg }}</p>
@@ -27,6 +28,7 @@
             </ul>
         </div>
     </div>
+</div>
 </template>
 
 <script lang="ts">
@@ -100,7 +102,7 @@ h2 {
             text-align: left;
             display: inline-block;
             list-style: none;
-            padding: 0;
+            padding: 1em;
             margin: 0.5em auto 1.5em;
             li {
                 font-size: 1.3em;

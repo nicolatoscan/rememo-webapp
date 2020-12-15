@@ -1,13 +1,17 @@
 <template>
     <div class="train-page">
-        <CollectionsSelector
-            v-if="currentStatus === EStatus.SelectingCollection"
-            :multiSelect="true"
-            @collectionUpdated="updateSelectedCollections($event)"
-        />
-        <button @click="collectionsSelected()">Start</button>
-        <div v-if="currentStatus === EStatus.Training" class="training-word">
-            <div v-if="currentWord">
+        <div v-if="currentStatus === EStatus.SelectingCollection" class="form">
+            <CollectionsSelector
+                class="option-section"
+                :multiSelect="true"
+                @collectionUpdated="updateSelectedCollections($event)"
+            />
+            <div class="option-section">
+                <button @click="collectionsSelected()" :disabled="selectedCollectionsIds.length === 0">Start</button>
+            </div>
+        </div>
+        <div v-if="currentStatus === EStatus.Training" class="training-word form">
+            <div v-if="currentWord" class="option-section">
                 <AskWord
                     :word="currentWord.original"
                     :answer="currentWord.translation"
@@ -16,7 +20,7 @@
                     v-model="answer"
                 />
             </div>
-            <div class="buttons">
+            <div class="buttons option-section">
                 <button @click="closeTraining()">X Close</button>
                 <button @click="showAnswer()">Show answer</button>
                 <button @click="check()" :class="resultCSSClassColor">Check</button>
@@ -58,14 +62,10 @@ export default defineComponent({
         CollectionsSelector, AskWord
     },
     created: async function () {
-        setInterval(() => {
-            console.log(this.$data.selecedCollections);
-        }, 1000000)
     },
     methods: {
         updateSelectedCollections: function(ids: string[]) {
             this.$data.selectedCollectionsIds = ids;
-            console.log(ids);
         },
         collectionsSelected: function () {
             this.$data.currentStatus = EStatus.Training;
@@ -118,10 +118,18 @@ export default defineComponent({
 <style scoped lang="scss">
 .train-page {
     padding: 1em;
+    .form {
+        padding: 1em;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
 
-    .buttons {
-        margin: 1em;
-        text-align: center;
+        .option-section {
+            display: inline-block;
+            button.big {
+                font-size: 1.5em;
+            }
+        }
     }
 }
 </style>
