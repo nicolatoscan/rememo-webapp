@@ -47,6 +47,8 @@ export default defineComponent({
                     this.$data.saving = true;
                     await collectionServices.createWord(this.$props.collectionId, this.$data.word);
                     this.$data.message = 'Word created successfully';
+                    this.$data.word.original = '';
+                    this.$data.word.translation = '';
                     this.$emit('wordCreated', this.$props.collectionId);
                     this.$data.saving = false;
                 } catch (err) {

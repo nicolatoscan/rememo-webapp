@@ -145,7 +145,7 @@
                 </li>
             </ul>
         </div>
-        <div class="full-screen-message closed-small-screen">
+        <div v-if="selectedCollection === null" class="full-screen-message closed-small-screen">
             <p>Select a collection</p>
         </div>
     </div>
@@ -314,6 +314,7 @@ export default defineComponent({
         padding: 1em;
         overflow: auto;
         justify-self: center;
+        overflow-x: hidden;
 
         h3 {
             padding: 5px;
